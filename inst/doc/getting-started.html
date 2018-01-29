@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Estimators</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p>\newcommand{\X}{\mathbf{X}}
+\newcommand{\Pb}{\mathbf{P}}
+\newcommand{\Gb}{\mathbf{G}}
+\newcommand{\XtXinv}{(\X<sup>{\top}\X)<sup>{-1}}</sup></sup>
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\V}{\mathbb{V}}</p>
+
+<p><strong>estimatr</strong> is a package in R dedicated to providing <a href="http://estimatr.declaredesign.org/articles/benchmarking-estimatr.html">fast</a> estimators that take into consideration designs often used by social scientists. Estimators are statistical methods for estimating quantities of interest like treatment effects or regression parameters. Many of the estimators included with the R programming language or popular R packages are slow and have default settings that lead to statistically inappropriate estimates. Certain estimators that reflect cutting-edge advances in statistics are not yet implemented in R packages for convenient use. <strong>estimatr</strong> is designed to solve these problems and provide estimators tuned for design-based inference.</p>
+
+<p>The most up-to-date version of this vignette can be found on the <a href="http://estimatr.declaredesign.org/articles/getting-started.html">DeclareDesign website here</a>.</p>
+
+<h1>Estimators</h1>
+
+<p>The current estimators we provide are:</p>
+
+<ul>
+<li><a href="#lm_robust"><code>lm_robust</code></a> - for fitting linear models with heteroskedasticity/cluster-robust standard errors</li>
+<li><a href="#lm_lin"><code>lm_lin</code></a> - a wrapper for <code>lm_robust()</code> to simplify interacting centered pre-treatment covariates with a treatment variable</li>
+<li><a href="#difference_in_means"><code>difference_in_means</code></a> - for estimating differences in means with appropriate standard errors for unit-randomized, cluster-randomized, block-randomized, matched-pair randomized, and matched-pair clustered designs</li>
+<li><a href="#horvitz_thompson"><code>horvitz_thompson</code></a> - for estimating average treatment effects taking into consideration treatment probabilities or sampling probabilities for simple and cluster randomized designs</li>
+</ul>
+
+<p>I first create some sample data to demonstrate how to use each of these estimators.</p>
+
+<pre><code class="r">library(estimatr)
+
+# Example dataset to be used throughout built using fabricatr and randomizr
+library(fabricatr)
+library(randomizr)
+dat &lt;- fabricate(
+  N = 100,                        # sample size
+  x = runif(N, 0, 1),             # pre-treatment covariate
+  y0 = rnorm(N, mean = x),        # control potential outcome
+  y1 = y0 + 0.35,                 # treatment potential outcome
+  z = complete_ra(N),             # complete random assignment to treatment
+  y = ifelse(z, y1, y0),          # observed outcome
+
+  # We will also consider clustered data
+  clust = sample(rep(letters[1:20], each = 5)),
+  z_clust = cluster_ra(clust),
+  y_clust = ifelse(z_clust, y1, y0)
+)
+
+head(dat)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">ID</th>
+<th align="right">x</th>
+<th align="right">y0</th>
+<th align="right">y1</th>
+<th align="right">z</th>
+<th align="right">y</th>
+<th align="left">clust</th>
+<th align="right">z_clust</th>
+<th align="right">y_clust</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">001</td>
+<td align="right">0.91</td>
+<td align="right">1.24</td>
+<td align="right">1.6</td>
+<td align="right">0</td>
+<td align="right">1.24</td>
+<td align="left">k</td>
+<td align="right">1</td>
+<td align="right">1.59</td>
+</tr>
+<tr>
+<td align="left">002</td>
+<td align="right">0.94</td>
+<td align="right">0.15</td>
+<td align="right">0.5</td>
+<td align="right">0</td>
+<td align="right">0.15</td>
+<td align="left">m</td>
+<td align="right">0</td>
+<td align="right">0.15</td>
+</tr>
+<tr>
+<td align="left">003</td>
+<td align="right">0.29</td>
+<td align="right">1.86</td>
+<td align="right">2.2</td>
+<td align="right">0</td>
+<td align="right">1.86</td>
+<td align="left">i</td>
+<td align="right">0</td>
+<td align="right">1.86</td>
+</tr>
+<tr>
+<td align="left">004</td>
+<td align="right">0.83</td>
+<td align="right">1.47</td>
+<td align="right">1.8</td>
+<td align="right">1</td>
+<td align="right">1.82</td>
+<td align="left">r</td>
+<td align="right">1</td>
+<td align="right">1.82</td>
+</tr>
+<tr>
+<td align="left">005</td>
+<td align="right">0.64</td>
+<td align="right">0.73</td>
+<td align="right">1.1</td>
+<td align="right">1</td>
+<td align="right">1.08</td>
+<td align="left">c</td>
+<td align="right">0</td>
+<td align="right">0.73</td>
+</tr>
+<tr>
+<td align="left">006</td>
+<td align="right">0.52</td>
+<td align="right">0.80</td>
+<td align="right">1.1</td>
+<td align="right">0</td>
+<td align="right">0.80</td>
+<td align="left">s</td>
+<td align="right">0</td>
+<td align="right">0.80</td>
+</tr>
+</tbody></table>
+
+<h2><code>lm_robust</code></h2>
+
+<p>The <code>estimatr</code> package provides <code>lm_robust()</code> to quickly fit linear models with the most common variance estimators and degrees of freedom corrections used in social science. You can easily estimate heteroskedastic standard errors, clustered standard errors, and classical standard errors.</p>
+
+<p>Usage largely mimics <code>lm()</code>, although it defaults to using Eicker-Huber-White robust standard errors, specifically &ldquo;HC2&rdquo; standard errors. More about the exact specifications used can be found in the <a href="http://estimatr.declaredesign.org/articles/technical-notes.html#lm_robust-notes">technical notes</a> and more about the estimator can be found on its reference page: <code>lm_robust()</code>.</p>
+
+<pre><code class="r">res &lt;- lm_robust(y ~ z + x, data = dat)
+summary(res)
+#&gt; 
+#&gt; Call:
+#&gt; lm_robust(formula = y ~ z + x, data = dat)
+#&gt; 
+#&gt; Standard error type =  HC2 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error Pr(&gt;|t|) CI Lower CI Upper DF
+#&gt; (Intercept)   -0.187      0.207 3.69e-01   -0.598    0.224 97
+#&gt; z              0.235      0.187 2.11e-01   -0.135    0.605 97
+#&gt; x              1.418      0.286 2.97e-06    0.851    1.985 97
+#&gt; 
+#&gt; Multiple R-squared:  0.182 , Adjusted R-squared:  0.165 
+#&gt; F-statistic: 10.8 on 2 and 97 DF,  p-value: 5.83e-05
+</code></pre>
+
+<p>Users can also easily get the output as a data.frame by using <code>tidy()</code>.</p>
+
+<pre><code class="r">tidy(res)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">(Intercept)</td>
+<td align="right">-0.19</td>
+<td align="right">0.21</td>
+<td align="right">0.37</td>
+<td align="right">-0.60</td>
+<td align="right">0.22</td>
+<td align="right">97</td>
+<td align="left">y</td>
+</tr>
+<tr>
+<td align="left">z</td>
+<td align="right">0.23</td>
+<td align="right">0.19</td>
+<td align="right">0.21</td>
+<td align="right">-0.14</td>
+<td align="right">0.60</td>
+<td align="right">97</td>
+<td align="left">y</td>
+</tr>
+<tr>
+<td align="left">x</td>
+<td align="right">1.42</td>
+<td align="right">0.29</td>
+<td align="right">0.00</td>
+<td align="right">0.85</td>
+<td align="right">1.99</td>
+<td align="right">97</td>
+<td align="left">y</td>
+</tr>
+</tbody></table>
+
+<p>It is straightforward to do cluster-robust inference, by passing the name of your cluster variable to the <code>clusters =</code> argument. The default variance estimator with clusters is dubbed &#39;CR2&#39; because it is analogous to &#39;HC2&#39; for the clustered case, and utilizes recent advances proposed by @pustejovskytipton2016 to correct hypotheses tests for small samples and work with commonly specified fixed effects and weights. Note that <code>lm_robust()</code> is quicker if your cluster variable is a factor!</p>
+
+<pre><code class="r">res_cl &lt;- lm_robust(
+  y_clust ~ z_clust + x,
+  data = dat,
+  clusters = clust
+)
+tidy(res_cl)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">(Intercept)</td>
+<td align="right">-0.48</td>
+<td align="right">0.22</td>
+<td align="right">0.05</td>
+<td align="right">-0.97</td>
+<td align="right">0.0</td>
+<td align="right">12</td>
+<td align="left">y_clust</td>
+</tr>
+<tr>
+<td align="left">z_clust</td>
+<td align="right">0.81</td>
+<td align="right">0.17</td>
+<td align="right">0.00</td>
+<td align="right">0.45</td>
+<td align="right">1.2</td>
+<td align="right">18</td>
+<td align="left">y_clust</td>
+</tr>
+<tr>
+<td align="left">x</td>
+<td align="right">1.43</td>
+<td align="right">0.34</td>
+<td align="right">0.00</td>
+<td align="right">0.72</td>
+<td align="right">2.1</td>
+<td align="right">17</td>
+<td align="left">y_clust</td>
+</tr>
+</tbody></table>
+
+<p>Researchers can also replicate Stata&#39;s standard errors by using the <code>se_type =</code> argument both with and without clusters:</p>
+
+<pre><code class="r">res_stata &lt;- lm_robust(
+  y_clust ~ z_clust + x,
+  data = dat,
+  clusters = clust,
+  se_type = &quot;stata&quot;
+)
+tidy(res_stata)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">(Intercept)</td>
+<td align="right">-0.48</td>
+<td align="right">0.22</td>
+<td align="right">0.04</td>
+<td align="right">-0.95</td>
+<td align="right">-0.02</td>
+<td align="right">19</td>
+<td align="left">y_clust</td>
+</tr>
+<tr>
+<td align="left">z_clust</td>
+<td align="right">0.81</td>
+<td align="right">0.17</td>
+<td align="right">0.00</td>
+<td align="right">0.46</td>
+<td align="right">1.16</td>
+<td align="right">19</td>
+<td align="left">y_clust</td>
+</tr>
+<tr>
+<td align="left">x</td>
+<td align="right">1.43</td>
+<td align="right">0.33</td>
+<td align="right">0.00</td>
+<td align="right">0.73</td>
+<td align="right">2.13</td>
+<td align="right">19</td>
+<td align="left">y_clust</td>
+</tr>
+</tbody></table>
+
+<p>Furthermore, users can take advantage of the <a href="https://github.com/leeper/margins"><code>margins</code></a> package to get marginal effects, average marginal effects and their standard errors, and more.</p>
+
+<pre><code class="r">library(margins)
+
+res_int &lt;- lm_robust(y ~ x * z, data = dat)
+mar_int &lt;- margins(res_int, vce = &quot;delta&quot;)
+summary(mar_int)
+#&gt;  factor    AME     SE      z      p   lower  upper
+#&gt;       x 1.4319 0.2894 4.9468 0.0000  0.8645 1.9992
+#&gt;       z 0.2355 0.1864 1.2633 0.2065 -0.1298 0.6008
+</code></pre>
+
+<p>Users who want their regression output in LaTeX or HTML can use the <a href="https://github.com/leifeld/texreg"><code>texreg</code></a> package, which we extend here to work with our linear regression estimators.</p>
+
+<pre><code class="r">library(texreg)
+
+tex_int &lt;- extract(res_int)
+texreg(tex_int, file = &quot;ex.tex&quot;)
+</code></pre>
+
+<h2><code>lm_lin</code></h2>
+
+<p>Adjusting for pre-treatment covariates when using regression to estimate treatment effects is common practice across scientific disciplines. However, @freedman2008 demonstrated that pre-treatment covariate adjustment biases estimates of average treatment effects. In response, @lin2013 proposed an alternative estimator that would reduce this bias and improve precision. @lin2013 proposes centering all pre-treatment covariates, interacting them with the treatment variable, and regressing the outcome on the treatment, the centered pre-treatment covariates, and all of the interaction terms. This can require a non-trivial amount of data pre-processing.</p>
+
+<p>To facilitate this, we provide a wrapper that processes the data and estimates the model. We dub this estimator the Lin estimator and it can be accessed using <code>lm_lin()</code>. This function is a wrapper for <code>lm_robust()</code>, and all arguments that work for <code>lm_robust()</code> work here. The only difference is in the second argument <code>covariates</code>, where one specifies a right-sided formula with all of your pre-treatment covariates. Below is an example, and more can be seen on the function reference page <a href="#lm_lin"><code>lm_lin</code></a> and some formal notation can be seen in the <a href="http://estimatr.declaredesign.org/articles/technical-notes.html#lm_lin-notes">technical notes</a>.</p>
+
+<pre><code class="r">res_lin &lt;- lm_lin(
+  y ~ z,
+  covariates = ~ x,
+  data = dat
+)
+tidy(res_lin)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">(Intercept)</td>
+<td align="right">0.55</td>
+<td align="right">0.15</td>
+<td align="right">0.00</td>
+<td align="right">0.25</td>
+<td align="right">0.84</td>
+<td align="right">96</td>
+<td align="left">y</td>
+</tr>
+<tr>
+<td align="left">z</td>
+<td align="right">0.24</td>
+<td align="right">0.19</td>
+<td align="right">0.21</td>
+<td align="right">-0.13</td>
+<td align="right">0.61</td>
+<td align="right">96</td>
+<td align="left">y</td>
+</tr>
+<tr>
+<td align="left">x_bar</td>
+<td align="right">1.72</td>
+<td align="right">0.47</td>
+<td align="right">0.00</td>
+<td align="right">0.79</td>
+<td align="right">2.65</td>
+<td align="right">96</td>
+<td align="left">y</td>
+</tr>
+<tr>
+<td align="left">z:x_bar</td>
+<td align="right">-0.58</td>
+<td align="right">0.58</td>
+<td align="right">0.32</td>
+<td align="right">-1.73</td>
+<td align="right">0.57</td>
+<td align="right">96</td>
+<td align="left">y</td>
+</tr>
+</tbody></table>
+
+<p>The output of a <code>lm_lin()</code> call can be used with the same methods as <code>lm_robust()</code>, including the <a href="https://github.com/leeper/margins"><code>margins</code></a> package.</p>
+
+<h2><code>difference_in_means</code></h2>
+
+<p>While estimating differences in means may seem straightforward, we provide a function that appropriately adjusts estimates for experimental design. We provide support for unit-randomized, cluster-randomized, block-randomized, matched-pair randomized, and matched-pair clustered designs. Usage is similar to usage in regression functions. More examples can be seen on the function reference page, <code>difference_in_means()</code>, and the actual estimators used can be found in the <a href="articles/technical-notes.html#lm_robust-notes">technical notes</a>.</p>
+
+<pre><code class="r"># Simple version
+res_dim &lt;- difference_in_means(
+  y ~ z,
+  data = dat
+)
+tidy(res_dim)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">z</td>
+<td align="right">0.16</td>
+<td align="right">0.2</td>
+<td align="right">0.44</td>
+<td align="right">-0.25</td>
+<td align="right">0.56</td>
+<td align="right">90</td>
+<td align="left">y</td>
+</tr>
+</tbody></table>
+
+<pre><code class="r"># Clustered version
+res_dim_cl &lt;- difference_in_means(
+  y_clust ~ z_clust,
+  data = dat,
+  clusters = clust
+)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="right">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">z_clust</td>
+<td align="right">0.82</td>
+<td align="right">0.17</td>
+<td align="right">0</td>
+<td align="right">0.45</td>
+<td align="right">1.2</td>
+<td align="right">18</td>
+<td align="left">y_clust</td>
+</tr>
+</tbody></table>
+
+<p>You can check which design was learned and which kind of estimator used by examining the <code>design</code> in the output.</p>
+
+<pre><code class="r">data(sleep)
+res_mps &lt;- difference_in_means(extra ~ group, data = sleep, blocks = ID)
+res_mps$design
+#&gt; [1] &quot;Matched-pair&quot;
+</code></pre>
+
+<h2><code>horvitz_thompson</code></h2>
+
+<p>Horvitz-Thompson estimators can be used to estimate unbiased treatment effects when the randomization is known. This is particularly useful when there are clusters of different sizes being randomized into treatment or when the treatment assignment is complex and there are dependencies across units in the probability of being treated. Horvitz-Thompson estimators require information about the probability each unit is in treatment and control, as well as the joint probability each unit is in the treatment, in the control, and in opposite treatment conditions.</p>
+
+<p>The estimator we implement here, <code>horvitz_thompson()</code> estimates treatment effects for two-armed trials. The easiest way to specify your design and recover the full set of joint and marginal probabilities is to declare your randomization scheme by using <a href="http://randomizr.declaredesign.org/reference/declare_ra.html"><code>declare_ra()</code></a> from the <a href="randomizr.declaredesign.org"><code>randomizr</code></a> package. I show some examples of how to do that below. Again, the technical details for this estimator can be found <a href="http://estimatr.declaredesign.org/articles/technical-notes.html#horvitz_thompson-notes">here</a> and in references in those notes.</p>
+
+<pre><code class="r"># Complete random assignment declaration
+crs_decl &lt;- declare_ra(
+  N = nrow(dat),
+  prob = 0.5,
+  simple = FALSE
+)
+
+ht_comp &lt;- horvitz_thompson(
+  y ~ z,
+  data = dat,
+  declaration = crs_decl
+)
+tidy(ht_comp)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="left">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">z</td>
+<td align="right">0.16</td>
+<td align="right">0.2</td>
+<td align="right">0.44</td>
+<td align="right">-0.24</td>
+<td align="right">0.56</td>
+<td align="left">NA</td>
+<td align="left">y</td>
+</tr>
+</tbody></table>
+
+<p>We can also easily estimate treatment effects from a cluster randomized experiment. Letting <code>horvitz_thompson</code> know that the design is clustered means it uses a collapsed estimator for the variance, described in @aronowmiddleton2013.</p>
+
+<pre><code class="r"># Clustered random assignment declaration
+crs_clust_decl &lt;- declare_ra(
+  N = nrow(dat),
+  clusters = dat$clust,
+  prob = 0.5,
+  simple = FALSE
+)
+
+ht_clust &lt;- horvitz_thompson(
+  y_clust ~ z_clust,
+  data = dat,
+  declaration = crs_clust_decl
+)
+tidy(ht_clust)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="left">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">z_clust</td>
+<td align="right">0.82</td>
+<td align="right">0.25</td>
+<td align="right">0</td>
+<td align="right">0.33</td>
+<td align="right">1.3</td>
+<td align="left">NA</td>
+<td align="left">y_clust</td>
+</tr>
+</tbody></table>
+
+<p>You can also build the condition probability matrix (<code>condition_prob_mat =</code>) that <code>horvitz_thompson()</code> needs from a declaration from the <a href="randomizr.declaredesign.org"><code>randomizr</code></a> package&mdash;using <code>declaration_to_conditional_pr_mat()</code>&mdash;or from a matrix of permutations of the treatment vector&mdash;using <code>permutations_to_conditional_pr_mat()</code>. <strong>This is largely intended for use by experienced users. Note, that if one passes a <code>condition_prob_mat</code> that indicates clustering, but does not specify the <code>clusters</code> argument, then the collapsed estimator will not be used.</strong></p>
+
+<pre><code class="r"># arbitrary permutation matrix
+possible_treats &lt;- cbind(
+  c(1, 1, 0, 1, 0, 0, 0, 1, 1, 0),
+  c(0, 1, 1, 0, 1, 1, 0, 1, 0, 1),
+  c(1, 0, 1, 1, 1, 1, 1, 0, 0, 0)
+)
+arb_pr_mat &lt;- permutations_to_condition_pr_mat(possible_treats)
+
+# Simulating a column to be realized treatment
+dat &lt;- data.frame(
+  z = possible_treats[, sample(ncol(possible_treats), size = 1)],
+  y = rnorm(nrow(possible_treats))
+)
+
+ht_arb &lt;- horvitz_thompson(
+  y ~ z,
+  data = dat,
+  condition_pr_mat = arb_pr_mat
+)
+tidy(ht_arb)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">coefficient_name</th>
+<th align="right">coefficients</th>
+<th align="right">se</th>
+<th align="right">p</th>
+<th align="right">ci_lower</th>
+<th align="right">ci_upper</th>
+<th align="left">df</th>
+<th align="left">outcome</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">z</td>
+<td align="right">-0.82</td>
+<td align="right">0.84</td>
+<td align="right">0.33</td>
+<td align="right">-2.5</td>
+<td align="right">0.83</td>
+<td align="left">NA</td>
+<td align="left">y</td>
+</tr>
+</tbody></table>
+
+<h1>References</h1>
+
+</body>
+
+</html>
