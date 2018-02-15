@@ -68,6 +68,23 @@ test_that("lm robust se", {
   # No weights first
   test_lm_robust_variance(NULL)
   test_lm_robust_variance(dat$W)
+
+  # works with formula in a variable (always worked)
+  form <- Y ~ Z
+  lm_form <- lm_robust(form, data = dat)
+
+  # works with formula inside a function (didn't work before 0.4.0)
+  f <- function(data) {
+    form2 <- Y ~ Z
+    return(lm_robust(form2, data = data))
+  }
+  lm_f_form <- f(dat)
+
+  expect_equal(
+    rmcall(lm_form),
+    rmcall(lm_f_form)
+  )
+
 })
 
 test_that("lm robust works with missingness", {
@@ -286,17 +303,16 @@ test_that("lm robust works with rank-deficient X", {
 })
 
 test_that("r squared is right", {
-
   lmo <- summary(lm(mpg ~ hp, mtcars))
   lmow <- summary(lm(mpg ~ hp, mtcars, weights = wt))
-  lmon <- summary(lm(mpg ~ hp-1, mtcars))
-  lmown <- summary(lm(mpg ~ hp-1, mtcars, weights = wt))
+  lmon <- summary(lm(mpg ~ hp - 1, mtcars))
+  lmown <- summary(lm(mpg ~ hp - 1, mtcars, weights = wt))
 
   lmro <- lm_robust(mpg ~ hp, mtcars)
   lmrow <- lm_robust(mpg ~ hp, mtcars, weights = wt)
-  lmron <- lm_robust(mpg ~ hp-1, mtcars)
-  lmrown <- lm_robust(mpg ~ hp-1, mtcars, weights = wt)
-  lmrclust <- lm_robust(mpg ~ hp-1, mtcars, weights = wt, clusters = carb) # for good measure
+  lmron <- lm_robust(mpg ~ hp - 1, mtcars)
+  lmrown <- lm_robust(mpg ~ hp - 1, mtcars, weights = wt)
+  lmrclust <- lm_robust(mpg ~ hp - 1, mtcars, weights = wt, clusters = carb) # for good measure
 
   expect_equal(
     c(lmo$r.squared, lmo$adj.r.squared, lmo$fstatistic),
@@ -323,4 +339,3 @@ test_that("r squared is right", {
     c(lmrclust$r.squared, lmrclust$adj.r.squared, lmrclust$fstatistic)
   )
 })
-

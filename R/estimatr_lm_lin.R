@@ -6,7 +6,7 @@
 #'
 #' @param formula an object of class formula, as in \code{\link{lm}}, such as
 #' \code{Y ~ Z} with only one variable on the right-hand side, the treatment
-#' @param covariates a right-sided formula with pre-treatment covaraites on
+#' @param covariates a right-sided formula with pre-treatment covariates on
 #' the right hand side, such as \code{ ~ x1 + x2 + x3}.
 #' @param data A \code{data.frame}
 #' @param weights the bare (unquoted) names of the weights variable in the
@@ -43,7 +43,7 @@
 #' in the
 #' \href{http://estimatr.declaredesign.org/articles/getting-started.html}{Getting Started vignette}
 #' and the
-#' \href{http://estimatr.declaredesign.org/articles/technical-notes.html}{technical notes}.
+#' \href{http://estimatr.declaredesign.org/articles/mathematical-notes.html}{mathematical notes}.
 #'
 #' @return An object of class \code{"lm_robust"}.
 #'
@@ -270,7 +270,7 @@ lm_lin <- function(formula,
   original_covar_names <- colnames(demeaned_covars)
 
   # Change name of centered covariates to end in bar
-  colnames(demeaned_covars) <- paste0(colnames(demeaned_covars), "_bar")
+  colnames(demeaned_covars) <- paste0(colnames(demeaned_covars), "_c")
 
   n_treat_cols <- ncol(treatment)
   n_covars <- ncol(demeaned_covars)

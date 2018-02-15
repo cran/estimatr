@@ -11,7 +11,7 @@ lm_lin(formula, covariates, data, weights, subset, clusters, se_type = NULL,
 \item{formula}{an object of class formula, as in \code{\link{lm}}, such as
 \code{Y ~ Z} with only one variable on the right-hand side, the treatment}
 
-\item{covariates}{a right-sided formula with pre-treatment covaraites on
+\item{covariates}{a right-sided formula with pre-treatment covariates on
 the right hand side, such as \code{ ~ x1 + x2 + x3}.}
 
 \item{data}{A \code{data.frame}}
@@ -100,7 +100,7 @@ those is interacted with the demeaned covariates. More details can be found
 in the
 \href{http://estimatr.declaredesign.org/articles/getting-started.html}{Getting Started vignette}
 and the
-\href{http://estimatr.declaredesign.org/articles/technical-notes.html}{technical notes}.
+\href{http://estimatr.declaredesign.org/articles/mathematical-notes.html}{mathematical notes}.
 }
 \examples{
 library(fabricatr)

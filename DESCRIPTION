@@ -1,8 +1,8 @@
 Package: estimatr
 Type: Package
 Title: Fast Estimators for Design-Based Inference
-Version: 0.2.0
-Date: 2018-01-24
+Version: 0.4.0
+Date: 2018-02-15
 Authors@R: c(person("Graeme", "Blair", email = "graeme.blair@ucla.edu", role = c("aut", "cre")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
              person("Alexander", "Coppock", email = "alex.coppock@yale.edu", role = c("aut")),
@@ -21,11 +21,10 @@ LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 6.0.1
 LazyData: true
 Suggests: testthat, sandwich, RcppEigen, fabricatr, randomizr (>= 0.8),
-        knitr, rmarkdown, margins
+        margins, prediction
 Enhances: broom, texreg
-VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2018-01-26 16:51:48 UTC; luke
+Packaged: 2018-02-15 21:24:00 UTC; luke
 Author: Graeme Blair [aut, cre],
   Jasper Cooper [aut],
   Alexander Coppock [aut],
@@ -36,4 +35,4 @@ Author: Graeme Blair [aut, cre],
     na.omit_detailed.data.frame)
 Maintainer: Graeme Blair <graeme.blair@ucla.edu>
 Repository: CRAN
-Date/Publication: 2018-01-29 10:02:35 UTC
+Date/Publication: 2018-02-15 22:38:39 UTC

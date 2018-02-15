@@ -9,8 +9,7 @@ library(margins)
 
 mv <- c("AME", "SE", "z", "p")
 
-test_that("lm robust can work with margins",{
-
+test_that("lm robust can work with margins", {
   x <- lm(mpg ~ cyl * hp + wt, data = mtcars)
   lmr <- lm_robust(mpg ~ cyl * hp + wt, data = mtcars)
 
@@ -27,16 +26,20 @@ test_that("lm robust can work with margins",{
   lmr_sum_marg <- summary(margins::margins(lmr, vce = "delta"))
 
   # Close enough with HC2?
-  expect_true(
-    max(lm_sum_marg[, mv] - lmr_sum_marg[, mv]) < 2e-05
+  expect_equal(
+    lm_sum_marg[, mv],
+    lmr_sum_marg[, mv],
+    tolerance = 0.01
   )
 
   # Close with classical
   lmr_class <- lm_robust(mpg ~ cyl * hp + wt, data = mtcars, se_type = "classical")
   lmrc <- summary(margins(lmr_class, vce = "delta"))
   lmc <- summary(margins(x, vce = "delta"))
-  expect_true(
-    max(lmc[, mv] - lmrc[, mv]) < 2e-05
+  expect_equal(
+    lmc[, mv],
+    lmrc[, mv],
+    tolerance = 0.01
   )
 
   # Works with other vce
@@ -47,11 +50,9 @@ test_that("lm robust can work with margins",{
   expect_true(!any(is.na(lmrc)))
   lmrc <- summary(margins(lmr_class, vce = "simulation", iterations = 10L))
   expect_true(!any(is.na(lmrc)))
-
 })
 
-test_that("lm robust + weights can work with margins",{
-
+test_that("lm robust + weights can work with margins", {
   x <- lm(mpg ~ cyl * hp, data = mtcars, weights = wt)
   x2 <- lm_robust(mpg ~ cyl * hp, data = mtcars, weights = wt, se_type = "classical")
   expect_equal(marginal_effects(x), marginal_effects(x2))
@@ -67,10 +68,9 @@ test_that("lm robust + weights can work with margins",{
   )
   # Have to round quite a bit!
   expect_equal(lmc, lmr)
-
 })
 
-test_that("lm robust + cluster can work with margins",{
+test_that("lm robust + cluster can work with margins", {
 
   # works but throws a lot of warnings
   x <- lm(mpg ~ cyl * hp + wt, data = mtcars)
@@ -88,12 +88,10 @@ test_that("lm robust + cluster can work with margins",{
   expect_true(
     !any(lmc[, 2] == lmr[, 2])
   )
-
 })
 
 
-test_that("lm lin can work with margins",{
-
+test_that("lm lin can work with margins", {
   data("alo_star_men")
   lml <- lm_lin(GPA_year1 ~ ssp, ~  gpa0, data = alo_star_men, se_type = "classical")
 
@@ -108,7 +106,4 @@ test_that("lm lin can work with margins",{
     round(lml_sum[, 4], 5),
     round(lmo_sum[, 4], 5)
   )
-
-
 })
-
