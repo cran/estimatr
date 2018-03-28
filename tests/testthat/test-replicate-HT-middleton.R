@@ -65,7 +65,7 @@ test_that("We match Joel's estimator", {
   ht_decl_o <- horvitz_thompson(
     y ~ z,
     data = dat,
-    declaration = randomizr::declare_ra(
+    ra_declaration = randomizr::declare_ra(
       N = nrow(dat),
       prob = dat$p[1],
       simple = TRUE
@@ -80,11 +80,11 @@ test_that("We match Joel's estimator", {
   )
 
   expect_equal(
-    tidy(ht_decl_o)[, c("coefficients", "se")],
-    tidy(ht_prob_o)[, c("coefficients", "se")]
+    tidy(ht_decl_o)[, c("estimate", "std.error")],
+    tidy(ht_prob_o)[, c("estimate", "std.error")]
   )
   expect_equivalent(
-    tidy(ht_decl_o)[, c("coefficients", "se")],
+    tidy(ht_decl_o)[, c("estimate", "std.error")],
     c(ht_est, se_ht)
   )
 
@@ -92,7 +92,7 @@ test_that("We match Joel's estimator", {
   ht_const_o <- horvitz_thompson(
     y ~ z,
     data = dat,
-    declaration = randomizr::declare_ra(
+    ra_declaration = randomizr::declare_ra(
       N = nrow(dat),
       prob = dat$p[1],
       simple = TRUE
@@ -101,7 +101,7 @@ test_that("We match Joel's estimator", {
   )
 
   expect_equivalent(
-    tidy(ht_const_o)[, c("coefficients", "se")],
+    tidy(ht_const_o)[, c("estimate", "std.error")],
     c(ht_est, se_constant_ht)
   )
 
@@ -122,7 +122,7 @@ test_that("We match Joel's estimator", {
   ht_comp_decl_o <- horvitz_thompson(
     y ~ z,
     data = dat,
-    declaration = randomizr::declare_ra(
+    ra_declaration = randomizr::declare_ra(
       N = nrow(dat),
       prob = dat$p[1],
       simple = FALSE
@@ -134,7 +134,7 @@ test_that("We match Joel's estimator", {
 
   # Don't match right now because pmats are diff
   # expect_equal(
-  #   tidy(ht_comp_decl_o)[, c("coefficients", "se")],
+  #   tidy(ht_comp_decl_o)[, c("estimate", "std.error")],
   #   c(ht_comp_est, se_comp_ht)
   # )
 
@@ -145,7 +145,7 @@ test_that("We match Joel's estimator", {
     condition_pr_mat = pmat.CR.true
   )
   expect_equivalent(
-    tidy(ht_comp_decl_o)[, c("coefficients", "se")],
+    tidy(ht_comp_decl_o)[, c("estimate", "std.error")],
     c(ht_comp_est, se_comp_ht)
   )
 
@@ -153,7 +153,7 @@ test_that("We match Joel's estimator", {
   # ht_comp_const_o  <- horvitz_thompson(
   #   y ~ z,
   #   data = dat,
-  #   declaration = randomizr::declare_ra(
+  #   ra_declaration = randomizr::declare_ra(
   #     N = nrow(dat),
   #     prob = dat$p[1],
   #     simple = FALSE
@@ -162,7 +162,7 @@ test_that("We match Joel's estimator", {
   # )
   #
   # expect_equivalent(
-  #   tidy(ht_comp_const_o)[, c("coefficients", "se")],
+  #   tidy(ht_comp_const_o)[, c("estimate", "std.error")],
   #   c(ht_comp_est, se_comp_constant_ht)
   # )
 
@@ -174,7 +174,7 @@ test_that("We match Joel's estimator", {
   #   se_type = "constant"
   # )
   # expect_equivalent(
-  #   tidy(ht_comp_const_o)[, c("coefficients", "se")],
+  #   tidy(ht_comp_const_o)[, c("estimate", "std.error")],
   #   c(ht_comp_est, se_comp_constant_ht)
   # )
 

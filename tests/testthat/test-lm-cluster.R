@@ -40,7 +40,7 @@ test_that("lm cluster se", {
           ci = FALSE,
           data = dat
         )
-      )[, c("p", "ci_lower", "ci_upper")]
+      )[, c("p.value", "ci.lower", "ci.upper")]
     ),
     matrix(NA, nrow = 3, ncol = 3)
   )
@@ -73,20 +73,20 @@ test_that("lm cluster se", {
   bm_interact
 
   bm_interact_interval <-
-    lm_interact_simple$coefficients["Z:X"] +
+    coef(lm_interact_simple)["Z:X"] +
     qt(0.975, df = bm_interact$dof["Z:X"]) * bm_interact$se["Z:X"] * c(-1, 1)
 
   bm_interact_stata_interval <-
-    lm_interact_simple$coefficients["Z:X"] +
+    coef(lm_interact_simple)["Z:X"] +
     qt(0.975, df = length(unique(dat$J)) - 1) * bm_interact$se.Stata["Z:X"] * c(-1, 1)
 
   expect_equivalent(
-    tidy(lm_interact)[4, c("se", "ci_lower", "ci_upper")],
+    tidy(lm_interact)[4, c("std.error", "ci.lower", "ci.upper")],
     c(bm_interact$se["Z:X"], bm_interact_interval)
   )
 
   expect_equivalent(
-    tidy(lm_interact_stata)[4, c("se", "ci_lower", "ci_upper")],
+    tidy(lm_interact_stata)[4, c("std.error", "ci.lower", "ci.upper")],
     c(bm_interact$se.Stata["Z:X"], bm_interact_stata_interval)
   )
 
@@ -108,11 +108,11 @@ test_that("lm cluster se", {
     )
 
   bm_full_moe <- qt(0.975, df = bm_full$dof) * bm_full$se
-  bm_full_lower <- lm_full_simple$coefficients - bm_full_moe
-  bm_full_upper <- lm_full_simple$coefficients + bm_full_moe
+  bm_full_lower <- coef(lm_full_simple) - bm_full_moe
+  bm_full_upper <- coef(lm_full_simple) + bm_full_moe
 
   expect_equivalent(
-    as.matrix(tidy(lm_full)[, c("se", "ci_lower", "ci_upper")]),
+    as.matrix(tidy(lm_full)[, c("std.error", "ci.lower", "ci.upper")]),
     cbind(bm_full$se, bm_full_lower, bm_full_upper)
   )
 
@@ -161,13 +161,13 @@ test_that("lm cluster se", {
 
     # Stata is the same as CR0 but with finite sample
     expect_equivalent(
-      lm_cr0$se ^ 2,
-      lm_stata$se ^ 2 * (N - length(lm_stata$coefficients)) * (length(unique(dat$J)) - 1) / ((N - 1) * length(unique(dat$J)))
+      lm_cr0$std.error ^ 2,
+      lm_stata$std.error ^ 2 * (N - length(coef(lm_stata))) * (length(unique(dat$J)) - 1) / ((N - 1) * length(unique(dat$J)))
     )
 
-    expect_false(all(lm_cr0$se == lm_stata$se))
-    expect_false(all(lm_cr0$se == lm_cr2$se))
-    expect_false(all(lm_stata$se == lm_cr2$se))
+    expect_false(all(lm_cr0$std.error == lm_stata$std.error))
+    expect_false(all(lm_cr0$std.error == lm_cr2$std.error))
+    expect_false(all(lm_stata$std.error == lm_cr2$std.error))
     expect_false(all(lm_stata$df == lm_cr2$df))
 
     expect_equivalent(
@@ -180,7 +180,29 @@ test_that("lm cluster se", {
   test_lm_cluster_variance(NULL)
   test_lm_cluster_variance(dat$W)
 
-  # bmlmse doesn't take into consideration weights, can't test
+})
+
+test_that("Clustered weighted SEs are correct", {
+  skip_if_not_installed("clubSandwich")
+
+  lm_cr2 <- lm_robust(mpg ~ hp, data = mtcars, weights = wt, clusters = cyl, se_type = "CR2")
+  lm_stata <- lm_robust(mpg ~ hp, data = mtcars, weights = wt, clusters = cyl, se_type = "stata")
+  lm_cr0 <- lm_robust(mpg ~ hp, data = mtcars, weights = wt, clusters = cyl, se_type = "CR0")
+
+  lm_o <- lm(mpg ~ hp, data = mtcars, weights = wt)
+
+  expect_equivalent(
+    vcov(lm_cr2),
+    as.matrix(clubSandwich::vcovCR(lm_o, cluster = mtcars$cyl, type = "CR2"))
+  )
+  expect_equivalent(
+    vcov(lm_cr0),
+    as.matrix(clubSandwich::vcovCR(lm_o, cluster = mtcars$cyl, type = "CR0"))
+  )
+  expect_equivalent(
+    vcov(lm_stata),
+    as.matrix(clubSandwich::vcovCR(lm_o, cluster = mtcars$cyl, type = "CR1S"))
+  )
 })
 
 test_that("lm cluster se with missingness", {
@@ -212,7 +234,7 @@ test_that("lm cluster se with missingness", {
 
   estimatr_cluster_out[["call"]] <- NULL
   estimatr_cluster_sub[["call"]] <- NULL
-  expect_identical(
+  expect_equal(
     estimatr_cluster_out,
     estimatr_cluster_sub
   )
@@ -228,10 +250,10 @@ test_that("lm works with quoted or unquoted vars and withor without factor clust
   )
 
   lmr <- lm_robust(Y~Z, data = dat, weights = W)
-  lmrq <- lm_robust(Y~Z, data = dat, weights = "W")
+  lmrq <- lm_robust(Y~Z, data = dat, weights = W)
   lmr[["call"]] <- NULL
   lmrq[["call"]] <- NULL
-  expect_identical(
+  expect_equal(
     lmr,
     lmrq
   )
@@ -240,19 +262,18 @@ test_that("lm works with quoted or unquoted vars and withor without factor clust
   dat$J <- as.character(dat$J)
 
   lmrc <- lm_robust(Y~Z, data = dat, clusters = J)
-  lmrcq <- lm_robust(Y~Z, data = dat, clusters = "J")
+  lmrcq <- lm_robust(Y~Z, data = dat, clusters = J)
   lmrc[["call"]] <- NULL
   lmrcq[["call"]] <- NULL
-  expect_identical(
+  expect_equal(
     lmrc,
     lmrcq
   )
 
-
   # works with num
   dat$J_num <- as.numeric(dat$J)
 
-  lmrc_qnum <- lm_robust(Y~Z, data = dat, clusters = "J_num")
+  lmrc_qnum <- lm_robust(Y~Z, data = dat, clusters = J_num)
   lmrc_qnum[["call"]] <- NULL
   expect_equal(
     lmrc,
@@ -290,12 +311,42 @@ test_that("Clustered SEs work with clusters of size 1", {
     )
 
   expect_equivalent(
-    as.matrix(tidy(lm_cr2)[, c("coefficients", "se", "df")]),
-    cbind(lmo$coefficients, bmo$se, bmo$dof)
+    as.matrix(tidy(lm_cr2)[, c("estimate", "std.error", "df")]),
+    cbind(coef(lmo), bmo$se, bmo$dof)
   )
 
   expect_equivalent(
-    as.matrix(tidy(lm_stata)[, c("coefficients", "se")]),
-    cbind(lmo$coefficients, bmo$se.Stata)
+    as.matrix(tidy(lm_stata)[, c("estimate", "std.error")]),
+    cbind(coef(lmo), bmo$se.Stata)
   )
+})
+
+test_that("multiple outcomes", {
+
+  skip_if_not_installed("clubSandwich")
+  lmo <- lm(cbind(mpg, hp) ~ wt, data = mtcars)
+  lmro <- lm_robust(cbind(mpg, hp) ~ wt, data = mtcars, clusters = cyl)
+
+  expect_equivalent(
+    as.matrix(clubSandwich::vcovCR(lmo, cluster = mtcars$cyl, type = "CR2")),
+    vcov(lmro)
+  )
+
+  expect_equivalent(
+    as.matrix(clubSandwich::vcovCR(lmo, cluster = mtcars$cyl, type = "CR0")),
+    vcov(lm_robust(cbind(mpg, hp) ~ wt, data = mtcars, clusters = cyl, se_type = "CR0"))
+  )
+
+  J <- length(unique(mtcars$cyl))
+  n <- nrow(mtcars)
+  r <- 2
+
+  # Have to manually do correction because clubSandwich uses n*ny and r*ny in place of n and r in
+  # stata correction
+  expect_equivalent(
+    as.matrix(clubSandwich::vcovCR(lmo, cluster = mtcars$cyl, type = "CR0")) *
+      ((J * (n - 1)) / ((J - 1) * (n - r))) ,
+    vcov(lm_robust(cbind(mpg, hp) ~ wt, data = mtcars, clusters = cyl, se_type = "stata"))
+  )
+
 })

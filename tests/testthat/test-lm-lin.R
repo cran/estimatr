@@ -20,7 +20,7 @@ test_that("Test LM Lin", {
       covariates = ~ X2,
       data = dat
     ),
-    "one variable on the right-hand side"
+    "must only have the treatment variable on the right-hand side of the formula"
   )
 
   dat2 <- dat
@@ -84,8 +84,8 @@ test_that("Test LM Lin", {
   )
 
   expect_equivalent(
-    lm_lin_out$coefficients,
-    lm(Y ~ Z + Z * X1_c + Z * X2_c, data = dat)$coefficients
+    coef(lm_lin_out),
+    coef(lm(Y ~ Z + Z * X1_c + Z * X2_c, data = dat))
   )
 
 
@@ -291,7 +291,7 @@ test_that("Test LM Lin", {
 
   lm_lin(Y ~ treat, ~ treat2 + X1, data = dat) # somewhat odd behavior
   expect_equivalent(
-    is.na(lm_lin(Y ~ treat, ~ X1_2 + X1, data = dat)$coefficients),
+    is.na(coef(lm_lin(Y ~ treat, ~ X1_2 + X1, data = dat))),
     c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE)
   )
 
@@ -307,7 +307,64 @@ test_that("Test LM Lin", {
   dat$z <- rbinom(nrow(dat), 1, 0.5)
   lmlo <- lm_lin(Y ~ z + 0, ~X1, data = dat)
   expect_equal(
-    lmlo$coefficient_name,
+    lmlo$term,
     c("z", "X1_c", "z:X1_c")
+  )
+})
+
+test_that("lm_lin same as sampling perspective", {
+
+  # Unweighted matches sampling view
+  lmo <- lm_lin(mpg ~ am, ~ hp, data = mtcars)
+  m_hp <- mean(mtcars$hp)
+  areg <- lm(mpg ~ hp, data = mtcars, subset = am == 1)
+  breg <- lm(mpg ~ hp, data = mtcars, subset = am == 0)
+  ate <-
+    with(mtcars[mtcars$am == 1, ],
+         mean(mpg) + (m_hp - mean(hp)) * coef(areg)[2]) -
+    with(mtcars[mtcars$am == 0, ],
+         mean(mpg) + (m_hp - mean(hp)) * coef(breg)[2])
+
+  expect_equivalent(
+    ate,
+    coef(lmo)["am"]
+  )
+})
+
+test_that("weighted lm_lin same as with one covar sampling view", {
+
+  # Weighted matches (one covar)
+  lmwo <- lm_lin(mpg ~ am, ~ hp, weights = wt, data = mtcars)
+  hp_wmean <- weighted.mean(mtcars$hp, mtcars$wt)
+  wareg <- lm(mpg ~ hp, data = mtcars, subset = am == 1, weights = wt)
+  wbreg <- lm(mpg ~ hp, data = mtcars, subset = am == 0, weights = wt)
+  wate <-
+    with(mtcars[mtcars$am == 1, ],
+         weighted.mean(mpg, wt) + (hp_wmean - weighted.mean(hp, wt)) * coef(wareg)[2]) -
+    with(mtcars[mtcars$am == 0, ],
+         weighted.mean(mpg, wt) + (hp_wmean - weighted.mean(hp, wt)) * coef(wbreg)[2])
+
+  expect_equivalent(
+    wate,
+    coef(lmwo)["am"]
+  )
+})
+
+test_that("weighted lm_lin same as with two covar sampling view", {
+
+  # Weighted matches (two covars)
+  lmw2o <- lm_lin(mpg ~ am, ~ hp + cyl, weights = wt, data = mtcars)
+  hpcyl_wmean <- apply(mtcars[, c("hp", "cyl")], 2, weighted.mean, mtcars$wt)
+  w2areg <- lm(mpg ~ hp + cyl, data = mtcars, subset = am == 1, weights = wt)
+  w2breg <- lm(mpg ~ hp + cyl, data = mtcars, subset = am == 0, weights = wt)
+  w2ate <-
+    with(mtcars[mtcars$am == 1, ],
+         weighted.mean(mpg, wt) + (hpcyl_wmean - apply(cbind(hp, cyl), 2, weighted.mean, wt)) %*% coef(w2areg)[2:3]) -
+    with(mtcars[mtcars$am == 0, ],
+         weighted.mean(mpg, wt) + (hpcyl_wmean - apply(cbind(hp, cyl), 2, weighted.mean, wt)) %*% coef(w2breg)[2:3])
+
+  expect_equivalent(
+    w2ate,
+    coef(lmw2o)["am"]
   )
 })

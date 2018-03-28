@@ -49,6 +49,18 @@ tidy.lm_robust <- function(object, ...) {
   return(return_frame)
 }
 
+#' @rdname tidy
+#'
+#' @export tidy.iv_robust
+#' @export
+tidy.iv_robust <- function(object, ...) {
+  return_frame <- tidy_data_frame(object)
+
+  warn_singularities(object)
+
+  return(return_frame)
+}
+
 
 #' @rdname tidy
 #'
@@ -71,20 +83,30 @@ tidy.horvitz_thompson <- function(object, ...) {
 
 
 tidy_data_frame <- function(object, digits = NULL) {
-  return_cols <-
+  vec_cols <-
     c(
-      "coefficient_name",
       "coefficients",
-      "se",
-      "p",
-      "ci_lower",
-      "ci_upper",
-      "df",
-      "outcome"
+      "std.error",
+      "p.value",
+      "ci.lower",
+      "ci.upper",
+      "df"
     )
 
-  return_frame <- as.data.frame(object[return_cols], stringsAsFactors = FALSE)
-  row.names(return_frame) <- NULL
+  tidy_mat <- do.call("cbind", lapply(vec_cols, function(x) {
+    as.vector(object[[x]])
+  }))
+  vec_cols[which(vec_cols == "coefficients")] <- "estimate"
+  colnames(tidy_mat) <- vec_cols
+  return_frame <- data.frame(
+    term = object[["term"]],
+    tidy_mat,
+    stringsAsFactors = FALSE
+  )
+
+  return_frame$outcome <- rep(object[["outcome"]], each = length(object[["term"]]))
+
+  rownames(return_frame) <- NULL
   return(return_frame)
 }
 

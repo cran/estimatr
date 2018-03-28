@@ -41,11 +41,86 @@ test_that("tidy, summary, and print work", {
 
   capture_output(
     expect_equivalent(
-      summary(lmo)$coefficients,
+      coef(summary(lmo)),
       print(lmo)
     )
   )
 
+  # works with multiple outcomes
+  lmrmo <- lm_robust(cbind(y, x) ~ z, data = dat, se_type = "classical")
+  lmmo <- lm(cbind(y, x) ~ z, data = dat)
+  slmmo <- summary(lmmo)
+
+  expect_equivalent(
+    as.matrix(tidy(lmrmo)[, c("term", "outcome")]),
+    cbind(
+      rep(c("(Intercept)", "z"), times = 2),
+      rep(c("y", "x"), each = 2)
+    )
+  )
+
+  expect_equal(
+    dimnames(vcov(lmrmo)),
+    list(
+      c("y:(Intercept)", "y:z", "x:(Intercept)", "x:z"),
+      c("y:(Intercept)", "y:z", "x:(Intercept)", "x:z")
+    )
+  )
+
+  expect_equal(
+    coef(lmrmo),
+    coef(lmmo)
+  )
+
+  capture_output(
+    expect_equal(
+      rownames(print(lmrmo)),
+      rownames(vcov(lmrmo))
+    )
+  )
+
+  expect_equal(
+    predict(lmrmo, newdata = dat),
+    predict(lmmo)
+  )
+
+  expect_error(
+    predict(lmrmo, newdata = dat, se.fit = TRUE),
+    "Can't set `se.fit` == TRUE with multivariate outcome"
+  )
+
+  expect_error(
+    slmrmo <- summary(lmrmo),
+    NA
+  )
+
+  lmroy <- lm_robust(y ~ z, data = dat, se_type = "classical")
+  lmrox <- lm_robust(x ~ z, data = dat, se_type = "classical")
+
+  # Only difference is name on fstatistic!
+  expect_equivalent(
+    slmrmo$`Response y`,
+    summary(lmroy)
+  )
+  expect_equivalent(
+    slmrmo$`Response x`,
+    summary(lmrox)
+  )
+
+  expect_equal(
+    lapply(slmrmo, function(x) coef(x)[, c(1, 2, 3)]),
+    lapply(slmmo, function(x) coef(x)[, c(1, 2, 4)])
+  )
+
+  expect_equivalent(
+    confint(lmrmo)[1:2,],
+    confint(lmroy)
+  )
+
+  expect_equivalent(
+    confint(lmrmo)[3:4,],
+    confint(lmrox)
+  )
 
   ## lm_lin
   lmlo <- lm_lin(y ~ x, ~ z, data = dat)
@@ -57,7 +132,7 @@ test_that("tidy, summary, and print work", {
 
   capture_output(
     expect_equivalent(
-      summary(lmlo)$coefficients,
+      coef(summary(lmlo)),
       print(lmlo)
     )
   )
@@ -70,14 +145,14 @@ test_that("tidy, summary, and print work", {
   )
 
   expect_equivalent(
-    as.matrix(tidy(ht)[, c("coefficients", "se", "p", "ci_lower", "ci_upper", "df")]),
-    summary(ht)$coefficients
+    as.matrix(tidy(ht)[, c("estimate", "std.error", "p.value", "ci.lower", "ci.upper", "df")]),
+    coef(summary(ht))
   )
 
 
   capture_output(
     expect_equivalent(
-      summary(ht)$coefficients,
+      coef(summary(ht)),
       print(ht)
     )
   )
@@ -93,7 +168,7 @@ test_that("tidy, summary, and print work", {
 
   capture_output(
     expect_equivalent(
-      summary(dim)$coefficients,
+      coef(summary(dim)),
       print(dim)
     )
   )
@@ -102,6 +177,10 @@ test_that("tidy, summary, and print work", {
   dat$z2 <- dat$z
   lmro <- lm_robust(y ~ z + z2 + x, data = dat)
   tidy(lmro)
+
+  # instrumental variables S3 methods are in the IV test, owing to
+  # the AER dependency
+  # iv_robust
 })
 
 
@@ -148,6 +227,11 @@ test_that("vcov works", {
     dim(vcov(lmro)),
     c(3, 3)
   )
+
+  # Instrumental variables
+  library(AER)
+  ivo <- ivreg(y ~ x | z, data = dat)
+
 })
 
 
@@ -168,7 +252,7 @@ test_that("coef and confint work", {
 
   expect_equivalent(
     confint(lmo),
-    cbind(lmo$ci_lower, lmo$ci_upper)
+    cbind(lmo$ci.lower, lmo$ci.upper)
   )
 
   lm2o <- lm_robust(y ~ x + z, data = dat)
@@ -186,14 +270,14 @@ test_that("coef and confint work", {
     confint(lmo, parm = "x", level = 0.90),
     with(
       lm_robust(y ~ x, data = dat, alpha = 0.10),
-      cbind(ci_lower[2], ci_upper[2])
+      cbind(ci.lower[2], ci.upper[2])
     )
   )
 
   lmlo <- lm_lin(y ~ x, ~ z, data = dat, se_type = "HC3")
   expect_equivalent(
     confint(lmlo),
-    cbind(lmlo$ci_lower, lmlo$ci_upper)
+    cbind(lmlo$ci.lower, lmlo$ci.upper)
   )
 
   dim <- difference_in_means(y ~ x, data = dat)
@@ -203,7 +287,7 @@ test_that("coef and confint work", {
   )
   expect_equivalent(
     confint(dim),
-    cbind(dim$ci_lower, dim$ci_upper)
+    cbind(dim$ci.lower, dim$ci.upper)
   )
 
   ht <- horvitz_thompson(y ~ x, condition_prs = p, data = dat)
@@ -213,7 +297,7 @@ test_that("coef and confint work", {
   )
   expect_equivalent(
     confint(ht),
-    cbind(ht$ci_lower, ht$ci_upper)
+    cbind(ht$ci.lower, ht$ci.upper)
   )
 
   # rank deficient

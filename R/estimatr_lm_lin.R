@@ -61,13 +61,14 @@
 #' An object of class \code{"lm_robust"} is a list containing at least the
 #' following components:
 #'   \item{coefficients}{the estimated coefficients}
-#'   \item{se}{the estimated standard errors}
+#'   \item{std.error}{the estimated standard errors}
 #'   \item{df}{the estimated degrees of freedom}
-#'   \item{p}{the p-values from a two-sided t-test using \code{coefficients}, \code{se}, and \code{df}}
-#'   \item{ci_lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
-#'   \item{ci_upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
-#'   \item{coefficient_name}{a character vector of coefficient names}
+#'   \item{p.value}{the p-values from a two-sided t-test using \code{coefficients}, \code{std.error}, and \code{df}}
+#'   \item{ci.lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
+#'   \item{ci.upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
+#'   \item{term}{a character vector of coefficient names}
 #'   \item{alpha}{the significance level specified by the user}
+#'   \item{se_type}{the standard error type specified by the user}
 #'   \item{res_var}{the residual variance}
 #'   \item{N}{the number of observations used}
 #'   \item{k}{the number of columns in the design matrix (includes linearly dependent columns!)}
@@ -162,16 +163,19 @@ lm_lin <- function(formula,
   # Check arguments
   # ----------
 
-  if (length(all.vars(formula[[3]])) > 1) {
+  if (length(all.vars(f_rhs(formula))) > 1) {
     stop(
-      "`formula` must only have one variable on the right-hand side: ",
-      " the treatment variable."
+      "The `formula` argument, `", format(formula), "`, must only have the ",
+      "treatment variable on the right-hand side of the formula. Covariates ",
+      "should be specified in the `covariates` argument like so:\n`covariates = ",
+      paste0("~ ", paste(all.vars(f_rhs(formula))[-1], sep = " + ")), "`.",
+      "\n\n See ?lm_lin."
     )
   }
 
   if (class(covariates) != "formula") {
     stop(
-      "`covariates` must be specified as a formula:\n",
+      "The `covariates` argument must be specified as a formula:\n",
       "You passed an object of class ", class(covariates)
     )
   }
@@ -181,7 +185,8 @@ lm_lin <- function(formula,
   # Check covariates is right hand sided fn
   if (attr(cov_terms, "response") != 0) {
     stop(
-      "`covariates` must be right-sided formula only, such as '~ x1 + x2 + x3'"
+      "Must not specify a response variable in `covariates`` formula.\n",
+      "`covariates` must be a right-sided formula, such as '~ x1 + x2 + x3'"
     )
   }
 
@@ -203,17 +208,14 @@ lm_lin <- function(formula,
       )
     )
 
-  where <- parent.frame()
-  model_data <- eval(substitute(
-    clean_model_data(
-      formula = full_formula,
-      data = data,
-      subset = subset,
-      cluster = clusters,
-      weights = weights,
-      where = where
-    )
-  ))
+  datargs <- enquos(
+    formula = full_formula,
+    weights = weights,
+    subset = subset,
+    cluster = clusters
+  )
+  data <- enquo(data)
+  model_data <- clean_model_data(data = data, datargs)
 
   outcome <- model_data$outcome
   n <- length(outcome)
@@ -256,16 +258,22 @@ lm_lin <- function(formula,
   # Center and interact variables
   # ----------
 
+  # Initialize as non-demeaned
   demeaned_covars <-
-    scale(
-      design_matrix[
-        ,
-        setdiff(colnames(design_matrix), c(design_mat_treatment, "(Intercept)")),
-        drop = FALSE
-      ],
-      center = TRUE,
-      scale = FALSE
-    )
+    design_matrix[
+      ,
+      setdiff(colnames(design_matrix), c(design_mat_treatment, "(Intercept)")),
+      drop = FALSE
+    ]
+
+  # Choose what to center on!
+  if (is.numeric(weights)) {
+    center <- apply(demeaned_covars, 2, weighted.mean, weights)
+  } else {
+    center <- colMeans(demeaned_covars)
+  }
+
+  demeaned_covars <- sweep(demeaned_covars, 2, center)
 
   original_covar_names <- colnames(demeaned_covars)
 
@@ -341,7 +349,7 @@ lm_lin <- function(formula,
     formula = formula
   )
 
-  return_list[["scaled_center"]] <- attr(demeaned_covars, "scaled:center")
+  return_list[["scaled_center"]] <- center
   setNames(return_list[["scaled_center"]], original_covar_names)
 
   return_list[["call"]] <- match.call()

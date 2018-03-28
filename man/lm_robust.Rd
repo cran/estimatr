@@ -24,8 +24,7 @@ corresponds to the clusters in the data.}
 \item{se_type}{The sort of standard error sought. If `clusters` is
 not specified the options are "HC0", "HC1" (or "stata", the equivalent),
  "HC2" (default), "HC3", or
-"classical". If `clusters` is specified the options are "CR0", "CR2" (default), or "stata" are
-permissible.}
+"classical". If `clusters` is specified the options are "CR0", "CR2" (default), or "stata". Can also specify "none", which may speed up estimation of the coefficients.}
 
 \item{ci}{logical. Whether to compute and return p-values and confidence
 intervals, TRUE by default.}
@@ -55,16 +54,21 @@ them can be gotten by passing this object to
 Users who want to print the results in TeX of HTML can use the
 \code{\link[texreg]{extract}} function and the \pkg{texreg} package.
 
+If users specify a multivariate linear regression model (multiple outcomes),
+then some of the below components will be of higher dimension to accommodate
+the additional models.
+
 An object of class \code{"lm_robust"} is a list containing at least the
 following components:
   \item{coefficients}{the estimated coefficients}
-  \item{se}{the estimated standard errors}
+  \item{std.error}{the estimated standard errors}
   \item{df}{the estimated degrees of freedom}
-  \item{p}{the p-values from a two-sided t-test using \code{coefficients}, \code{se}, and \code{df}}
-  \item{ci_lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
-  \item{ci_upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
-  \item{coefficient_name}{a character vector of coefficient names}
+  \item{p.value}{the p-values from a two-sided t-test using \code{coefficients}, \code{std.error}, and \code{df}}
+  \item{ci.lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
+  \item{ci.upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
+  \item{term}{a character vector of coefficient names}
   \item{alpha}{the significance level specified by the user}
+  \item{se_type}{the standard error type specified by the user}
   \item{res_var}{the residual variance}
   \item{N}{the number of observations used}
   \item{k}{the number of columns in the design matrix (includes linearly dependent columns!)}
@@ -75,6 +79,7 @@ following components:
   is the mean of \eqn{y[i]} if there is an intercept and zero otherwise,
   and \eqn{e[i]} is the ith residual.}
   \item{adj.r.squared}{The \eqn{R^2} but penalized for having more parameters, \code{rank}}
+  \item{fstatistic}{a vector with the value of the F-statistic with the numerator and denominator degrees of freedom}
   \item{weighted}{whether or not weights were applied}
   \item{call}{the original function call}
 We also return \code{terms} and \code{contrasts}, used by \code{predict}.
@@ -129,9 +134,9 @@ summary(lmro)
 # Can also get coefficients three ways
 lmro$coefficients
 coef(lmro)
-tidy(lmro)$coefficients
+tidy(lmro)$estimate
 # Can also get confidence intervals from object or with new 1 - `alpha`
-lmro$ci_lower
+lmro$ci.lower
 confint(lmro, level = 0.8)
 
 # Can recover classical standard errors

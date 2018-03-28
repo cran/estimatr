@@ -3,8 +3,11 @@ lm_return <- function(return_list, model_data, formula) {
   return_list[["contrasts"]] <- attr(model_data$design_matrix, "contrasts")
   return_list[["terms"]] <- model_data$terms
   return_list[["weights"]] <- model_data$weights
-  return_list[["outcome"]] <- deparse(formula[[2]], nlines = 5)
-  names(return_list[["coefficients"]]) <- return_list[["coefficient_name"]]
+  if (is.matrix(model_data$outcome)) {
+    return_list[["outcome"]] <- colnames(model_data$outcome)
+  } else {
+    return_list[["outcome"]] <- deparse(formula[[2]], nlines = 5)
+  }
 
   return(return_list)
 }
@@ -30,17 +33,17 @@ dim_like_return <- function(return_list, alpha, formula, conditions) {
   coef_name <- labels(fterms)
 
   if (add_label) {
-    return_list[["coefficient_name"]] <- paste0(
+    return_list[["term"]] <- paste0(
       coef_name,
       conditions[[2]]
     )
   } else {
-    return_list[["coefficient_name"]] <- coef_name
+    return_list[["term"]] <- coef_name
   }
 
   return_list[["outcome"]] <- deparse(formula[[2]], nlines = 5)
 
-  names(return_list[["coefficients"]]) <- return_list[["coefficient_name"]]
+  names(return_list[["coefficients"]]) <- return_list[["term"]]
 
   return(return_list)
 }
