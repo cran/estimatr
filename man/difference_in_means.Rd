@@ -97,7 +97,7 @@ Importantly, if the user specifies weights, the estimation is handed off
 to \code{\link{lm_robust}} with the appropriate robust standard errors
 as weighted difference-in-means estimators are not implemented here.
 More details of the about each of the estimators can be found in the
-\href{http://estimatr.declaredesign.org/articles/mathematical-notes.html}{mathematical notes}.
+\href{https://declaredesign.org/R/estimatr/articles/mathematical-notes.html}{mathematical notes}.
 }
 \examples{
 
@@ -195,7 +195,7 @@ difference_in_means(
 # comparison of interest
 dat$Z_multi <- simple_ra(
   nrow(dat),
-  condition_names = c("Treatment 2", "Treatment 1", "Control"),
+  conditions = c("Treatment 2", "Treatment 1", "Control"),
   prob_each = c(0.4, 0.4, 0.2)
 )
 

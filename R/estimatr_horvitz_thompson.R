@@ -67,7 +67,7 @@
 #' treatment conditions.
 #'
 #' Users interested in more details can see the
-#' \href{http://estimatr.declaredesign.org/articles/mathematical-notes.html}{mathematical notes}
+#' \href{https://declaredesign.org/R/estimatr/articles/mathematical-notes.html}{mathematical notes}
 #' for more information and references, or see the references below.
 #'
 #' There are three distinct ways that users can specify the design to the
@@ -283,25 +283,22 @@ horvitz_thompson <- function(formula,
     }
 
     if (!is.null(condition2)) {
-      treatnum <-
-        which(ra_declaration$cleaned_arguments$condition_names == condition2)
+      treatnum <- match(condition2, ra_declaration$conditions)
 
-      if (!(condition2 %in% ra_declaration$cleaned_arguments$condition_names)) {
+      if (is.na(treatnum)) {
         stop(
           "If `condition2` and `ra_declaration` are both specified, ",
           "`condition2` must match the condition_names in `ra_declaration`.",
           "\n`condition2`: ", condition2, "\n`condition_names`: ",
           paste0(
-            ra_declaration$cleaned_arguments$condition_names,
+            ra_declaration$conditions,
             collapse = ", "
           )
         )
       }
 
-      treatment_prob <- obtain(
-        ra_declaration,
-        condition2
-      )
+      treatment_prob <- obtain(ra_declaration,condition2)
+
     } else {
       # assuming treatment is second column
       treatment_prob <- ra_declaration$probabilities_matrix[, 2]
@@ -359,19 +356,18 @@ horvitz_thompson <- function(formula,
   # Declaration is passed
   if (!is.null(ra_declaration)) {
 
+    prob_matrix <- NULL
     # Use output from clean_model_data to rebuild declaration
     if (nrow(ra_declaration$probabilities_matrix) != length(data$y)) {
-      prob_names <- colnames(ra_declaration$probabilities_matrix)
-      ra_declaration$probabilities_matrix <- cbind(
-        1 - data$condition_probabilities,
-        data$condition_probabilities
-      )
-      colnames(ra_declaration$probabilities_matrix) <- prob_names
+      prob_matrix <-
+        cbind(
+          1 - data$condition_probabilities,
+          data$condition_probabilities
+        )
     }
-
     # If simple, just use condition probabilities shortcut
     # Same if se not needed
-    if (ra_declaration$ra_type == "simple" || se_type == "none") {
+    if (inherits(ra_declaration, "ra_simple") || se_type == "none") {
       condition_pr_mat <- NULL
     } else {
       # TODO to allow for declaration with multiple arms, get probability matrix
@@ -379,7 +375,8 @@ horvitz_thompson <- function(formula,
       condition_pr_mat <- declaration_to_condition_pr_mat(
         ra_declaration,
         condition1,
-        condition2
+        condition2,
+        prob_matrix
       )
     }
   } else if (is.null(condition_pr_mat)) {
@@ -473,11 +470,13 @@ horvitz_thompson <- function(formula,
       }
     } else {
       # blocked case
-      message(
-        "Assuming complete random assignment of clusters within blocks. ",
-        "User can use `ra_declaration` or `condition_pr_mat` to have full ",
-        "control over the design."
-      )
+      if (simple) {
+        message(
+          "Assuming complete random assignment of clusters within blocks. ",
+          "User can use `ra_declaration` or `condition_pr_mat` to have full ",
+          "control over the design."
+        )
+      }
 
       if (is.null(data$condition_probabilities)) {
         message(
@@ -630,6 +629,11 @@ horvitz_thompson_internal <- function(condition_pr_mat = NULL,
         "at the moment"
       )
     }
+
+    if (is.factor(data$clusters)) {
+      data$clusters <- as.numeric(data$clusters)
+    }
+
     # used for cluster randomized designs
     k <- length(unique(data$clusters))
 
@@ -647,7 +651,7 @@ horvitz_thompson_internal <- function(condition_pr_mat = NULL,
       y1_totals[as.character(data$clusters[-to_drop][t1])]
 
     prs <- data$condition_probabilities[-to_drop]
-    ps2 <- prs[k + t2]
+    ps2 <- prs[t2]
     ps1 <- 1 - prs[t1]
 
     # for now rescale, with joint pr need squared top alone
