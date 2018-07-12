@@ -7,7 +7,8 @@
 #' \code{Y ~ Z} with only one variable on the right-hand side, the treatment.
 #' @param data A data.frame.
 #' @param condition_prs An optional bare (unquoted) name of the variable with
-#' the condition 2 (treatment) probabilities. See details.
+#' the condition 2 (treatment) probabilities. See details. May also use a single
+#' number for the condition 2 probability if it is constant.
 #' @param blocks An optional bare (unquoted) name of the block variable. Use
 #' for blocked designs only. See details.
 #' @param clusters An optional bare (unquoted) name of the variable that
@@ -123,10 +124,11 @@
 #'
 #'   \item{coefficients}{the estimated difference in totals}
 #'   \item{std.error}{the estimated standard error}
+#'   \item{statistic}{the z-statistic}
 #'   \item{df}{the estimated degrees of freedom}
 #'   \item{p.value}{the p-value from a two-sided z-test using \code{coefficients} and \code{std.error}}
-#'   \item{ci.lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
-#'   \item{ci.upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
+#'   \item{conf.low}{the lower bound of the \code{1 - alpha} percent confidence interval}
+#'   \item{conf.high}{the upper bound of the \code{1 - alpha} percent confidence interval}
 #'   \item{term}{a character vector of coefficient names}
 #'   \item{alpha}{the significance level specified by the user}
 #'   \item{N}{the number of observations used}
@@ -247,6 +249,7 @@ horvitz_thompson <- function(formula,
     )
   }
 
+  simple_specified <- is.logical(simple)
   se_type <- match.arg(se_type)
 
   # -----
@@ -271,7 +274,8 @@ horvitz_thompson <- function(formula,
       )
     }
 
-    # Add clusters, blocks, and treatment probabilities to data so they can be cleaned with clean_model_data
+    # Add clusters, blocks, and treatment probabilities to data so they
+    # can be cleaned with clean_model_data
     if (!is.null(ra_declaration$clusters)) {
       .clusters_ddinternal <- ra_declaration$clusters
       clusters <- quo(.clusters_ddinternal)
@@ -319,7 +323,8 @@ horvitz_thompson <- function(formula,
   model_data <- clean_model_data(data = data, datargs, estimator = "ht")
 
   ## condition_pr_mat, if supplied, must be same length
-  if (!is.null(condition_pr_mat) && (2 * length(model_data$outcome) != nrow(condition_pr_mat))) {
+  if (!is.null(condition_pr_mat) &&
+      (2 * length(model_data$outcome) != nrow(condition_pr_mat))) {
     stop(
       "After cleaning the data, it has ", length(model_data$outcome), " ",
       "while `condition_pr_mat` has ", nrow(condition_pr_mat), ". ",
@@ -405,8 +410,8 @@ horvitz_thompson <- function(formula,
         if (is.null(data$condition_probabilities)) {
           data$condition_probabilities <- mean(data$t == condition2)
           message(
-            "Learning probability of complete random assignment from data with ",
-            "prob = ", round(data$condition_probabilities[1], 3)
+            "Learning probability of complete random assignment from data ",
+            "with prob = ", round(data$condition_probabilities[1], 3)
           )
 
           if (se_type != "none") {
@@ -432,14 +437,17 @@ horvitz_thompson <- function(formula,
       }
     } else if (is.null(data$blocks)) {
       # clustered case
-      message(
-        "`simple` = ", simple, ", using ",
-        ifelse(simple, "simple", "complete"), " cluster randomization"
-      )
+      if (!simple_specified) {
+        message(
+          "Assuming ", ifelse(simple, "simple", "complete"),
+          " cluster randomization"
+        )
+      }
 
       if (is.null(data$condition_probabilities)) {
 
-        # Split by cluster and get complete randomized values within each cluster
+        # Split by cluster and get complete randomized values
+        # within each cluster
         cluster_treats <- get_cluster_treats(data, condition2)
         data$condition_probabilities <- mean(cluster_treats$treat_clust)
 
@@ -548,7 +556,8 @@ horvitz_thompson <- function(formula,
         data = x,
         condition1 = condition1,
         condition2 = condition2,
-        condition_pr_mat = condition_pr_mat[c(x$index, N + x$index), c(x$index, N + x$index)],
+        condition_pr_mat = condition_pr_mat[c(x$index, N + x$index),
+                                            c(x$index, N + x$index)],
         se_type = se_type,
         alpha = alpha
       )
@@ -563,7 +572,10 @@ horvitz_thompson <- function(formula,
     diff <- with(block_estimates, sum(coefficients * N / N_overall))
 
     if (se_type != "none") {
-      std.error <- with(block_estimates, sqrt(sum(std.error^2 * (N / N_overall)^2)))
+      std.error <- with(
+        block_estimates,
+        sqrt(sum(std.error^2 * (N / N_overall)^2))
+      )
     } else {
       std.error <- NA
     }
@@ -765,7 +777,8 @@ horvitz_thompson_internal <- function(condition_pr_mat = NULL,
           }
         } else {
           warning(
-            "Variance is NaN. This is likely the result of a complex condition probability matrix"
+            "Variance is NaN. This is likely the result ",
+            "of a complex condition probability matrix"
           )
           std.error <- NA
         }

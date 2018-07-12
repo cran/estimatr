@@ -240,7 +240,7 @@ lm_robust_fit <- function(y,
     if (fes && iv_stage[[1]] != 1) {
       # Override previous fitted values with those that take into consideration
       # the fixed effects (unless IV first stage, where we stay w/ projected model)
-      return_list[["fitted.values"]] <-  as.matrix(data[["yoriginal"]] - fit_vals[["ei"]])
+      return_list[["fitted.values"]] <- as.matrix(data[["yoriginal"]] - fit_vals[["ei"]])
 
       if (weighted) {
         return_list[["fitted.values"]] <- return_list[["fitted.values"]] / data[["weights"]]
@@ -253,7 +253,9 @@ lm_robust_fit <- function(y,
       return_list[["fitted.values"]] <- as.matrix(fit_vals[[fitted.vals_name]])
     }
 
-    if (fes && (ncol(data[["fixed_effects"]]) == 1) && is.numeric(data[["Xoriginal"]])) {
+    if (fes &&
+        (ncol(data[["fixed_effects"]]) == 1) &&
+        is.numeric(data[["Xoriginal"]])) {
       return_list[["fixed_effects"]] <- setNames(
         tapply(
           return_list[["fitted.values"]] -
@@ -565,10 +567,26 @@ prep_data <- function(data,
   }
 
   if (fes) {
-    data[["femat"]] <- model.matrix(
-      ~ 0 + .,
-      data = as.data.frame(data[["fixed_effects"]])
-    )
+    fe_dat <- as.data.frame(data[["fixed_effects"]])
+    fe_levels <- vapply(fe_dat, nlevels, 0L)
+    if (any(fe_levels == 1)) {
+      if (ncol(fe_dat) != 1) {
+        stop(
+          "Can't have a fixed effect with only one group AND multiple fixed ",
+          "effect variables"
+        )
+      }
+      data[["femat"]] <- matrix(
+        1,
+        nrow(data[["fixed_effects"]]),
+        dimnames = list(
+          names(data[["fixed_effects"]]),
+          paste0(colnames(data[["fixed_effects"]]), data[["fixed_effects"]][1])
+        )
+      )
+    } else {
+      data[["femat"]] <- model.matrix( ~ 0 + ., data = fe_dat)
+    }
   }
 
   if (weighted) {

@@ -29,7 +29,8 @@ as all blocked designs use complete randomization, or either
 defaults to \code{TRUE}.}
 
 \item{condition_prs}{An optional bare (unquoted) name of the variable with
-the condition 2 (treatment) probabilities. See details.}
+the condition 2 (treatment) probabilities. See details. May also use a single
+number for the condition 2 probability if it is constant.}
 
 \item{condition_pr_mat}{An optional 2n * 2n matrix of marginal and joint
 probabilities of all units in condition1 and condition2. See details.}
@@ -84,10 +85,11 @@ least the following components:
 
   \item{coefficients}{the estimated difference in totals}
   \item{std.error}{the estimated standard error}
+  \item{statistic}{the z-statistic}
   \item{df}{the estimated degrees of freedom}
   \item{p.value}{the p-value from a two-sided z-test using \code{coefficients} and \code{std.error}}
-  \item{ci.lower}{the lower bound of the \code{1 - alpha} percent confidence interval}
-  \item{ci.upper}{the upper bound of the \code{1 - alpha} percent confidence interval}
+  \item{conf.low}{the lower bound of the \code{1 - alpha} percent confidence interval}
+  \item{conf.high}{the upper bound of the \code{1 - alpha} percent confidence interval}
   \item{term}{a character vector of coefficient names}
   \item{alpha}{the significance level specified by the user}
   \item{N}{the number of observations used}

@@ -11,9 +11,10 @@ summary.lm_robust <- function(object, ...) {
     mat_objs <- c(
       "coefficients",
       "std.error",
+      "statistic",
       "df",
-      "ci.lower",
-      "ci.upper",
+      "conf.low",
+      "conf.high",
       "p.value"
     )
 
@@ -101,12 +102,13 @@ summary.horvitz_thompson <- function(object, ...) {
 summarize_tidy <- function(object, test = "t", ...) {
   remove_cols <- c("term", "outcome")
 
-  # This is ugly SO THAT summary(fit)$coefficients returns something like lm does.
+  # Ugly so that summary(fit)$coefficients matches lm()
   tidy_out <- tidy(object, ...)
-  colnames(tidy_out)[2:7] <-
+  colnames(tidy_out)[2:8] <-
     c(
       "Estimate",
       "Std. Error",
+      paste0(test, " value"),
       paste0("Pr(>|", test, "|)"),
       "CI Lower",
       "CI Upper",

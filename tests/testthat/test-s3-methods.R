@@ -62,6 +62,11 @@ test_that("tidy, summary, and print work", {
     1
   )
 
+  expect_equal(
+    colnames(coef(summary(lmo))),
+    c("Estimate", "Std. Error", "t value", "Pr(>|t|)", "CI Lower", "CI Upper", "DF")
+  )
+
   capture_output(
     expect_equivalent(
       coef(summary(lmo)),
@@ -137,9 +142,9 @@ test_that("tidy, summary, and print work", {
     summary(lmrox)
   )
 
-  expect_equal(
-    lapply(slmrmo, function(x) coef(x)[, c(1, 2, 3)]),
-    lapply(slmmo, function(x) coef(x)[, c(1, 2, 4)])
+  expect_equivalent(
+    lapply(slmrmo, function(x) coef(x)[, 1:4]),
+    lapply(slmmo, function(x) coef(x)[, 1:4])
   )
 
   expect_equivalent(
@@ -175,8 +180,13 @@ test_that("tidy, summary, and print work", {
   )
 
   expect_equivalent(
-    as.matrix(tidy(ht)[, c("estimate", "std.error", "p.value", "ci.lower", "ci.upper", "df")]),
+    as.matrix(tidy(ht)[, c("estimate", "std.error", "statistic", "p.value", "conf.low", "conf.high", "df")]),
     coef(summary(ht))
+  )
+
+  expect_equal(
+    colnames(coef(summary(ht))),
+    c("Estimate", "Std. Error", "z value", "Pr(>|z|)", "CI Lower", "CI Upper", "DF")
   )
 
 
@@ -194,7 +204,10 @@ test_that("tidy, summary, and print work", {
     "data.frame"
   )
 
-  summary(dim)$coefficients
+  expect_equal(
+    colnames(coef(summary(dim))),
+    c("Estimate", "Std. Error", "t value", "Pr(>|t|)", "CI Lower", "CI Upper", "DF")
+  )
 
   capture_output(
     expect_equivalent(
@@ -297,12 +310,12 @@ test_that("coef and confint work", {
 
   expect_equivalent(
     confint(lmo),
-    cbind(lmo$ci.lower, lmo$ci.upper)
+    cbind(lmo$conf.low, lmo$conf.high)
   )
 
   expect_equivalent(
     confint(lmfo),
-    cbind(lmfo$ci.lower, lmfo$ci.upper)
+    cbind(lmfo$conf.low, lmfo$conf.high)
   )
 
   expect_equal(
@@ -330,14 +343,14 @@ test_that("coef and confint work", {
     confint(lmo, parm = "x", level = 0.90),
     with(
       lm_robust(y ~ x, data = dat, alpha = 0.10),
-      cbind(ci.lower[2], ci.upper[2])
+      cbind(conf.low[2], conf.high[2])
     )
   )
 
   lmlo <- lm_lin(y ~ x, ~ z, data = dat, se_type = "HC3")
   expect_equivalent(
     confint(lmlo),
-    cbind(lmlo$ci.lower, lmlo$ci.upper)
+    cbind(lmlo$conf.low, lmlo$conf.high)
   )
 
   dim <- difference_in_means(y ~ x, data = dat)
@@ -347,7 +360,7 @@ test_that("coef and confint work", {
   )
   expect_equivalent(
     confint(dim),
-    cbind(dim$ci.lower, dim$ci.upper)
+    cbind(dim$conf.low, dim$conf.high)
   )
 
   ht <- horvitz_thompson(y ~ x, condition_prs = p, data = dat)
@@ -357,7 +370,7 @@ test_that("coef and confint work", {
   )
   expect_equivalent(
     confint(ht),
-    cbind(ht$ci.lower, ht$ci.upper)
+    cbind(ht$conf.low, ht$conf.high)
   )
 
   # rank deficient
