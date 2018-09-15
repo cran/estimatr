@@ -53,7 +53,7 @@
 #' to \code{\link{lm_robust}} with the appropriate robust standard errors
 #' as weighted difference-in-means estimators are not implemented here.
 #' More details of the about each of the estimators can be found in the
-#' \href{https://declaredesign.org/R/estimatr/articles/mathematical-notes.html}{mathematical notes}.
+#' \href{https://declaredesign.org/r/estimatr/articles/mathematical-notes.html}{mathematical notes}.
 #'
 #' @return Returns an object of class \code{"difference_in_means"}.
 #'
@@ -270,6 +270,9 @@ difference_in_means <- function(formula,
     condition2 <- condition_names[[2]]
     condition1 <- condition_names[[1]]
   }
+
+  # subset data
+  data <- subset.data.frame(data, t %in% c(condition1, condition2))
 
   if (is.null(data$block)) {
     return_frame <- difference_in_means_internal(

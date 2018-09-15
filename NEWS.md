@@ -1,3 +1,14 @@
+# estimatr 0.12.0
+
+* Fixed ambiguity about how interacted covariates were centered in `lm_lin`
+* A series of fixes for bugs that occurred with multiple outcomes (multivariate regression):
+  * Fixed bug pointed out by James Pustejovsky via the `sandwich` version 2.5-0 and off-diagonal blocks of multivariate regression vcov matrices
+  * Fixed bugs in `lm_lin` preventing multivariate regression
+  * Fixed bug that truncated degrees of freedom with "CR2"  standard errors
+  * Fixed bug that returned incorrect R-squared for the second or later outcomes
+* Fixed bug preventing integration with latest version of `margins`
+* Fixed bug with `difference_in_means` when using `condition1` and `condition2` to subset a treatment vector with more than two treatment conditions. Previous estimates and standard errors were incorrect.
+
 # estimatr 0.10.0
 
 * Changed names of confidence interval columns in tidied data from `ci.lower` and `ci.upper` to `conf.low` and `conf.high` to be in line with other tidy methods
