@@ -16,10 +16,10 @@
 #' pass multiple-fixed effects with intersecting groups. Speed gains are greatest for
 #' variables with large numbers of groups and when using "HC1" or "stata" standard errors.
 #' See 'Details'.
-#' @param se_type The sort of standard error sought. If `clusters` is
+#' @param se_type The sort of standard error sought. If \code{clusters} is
 #' not specified the options are "HC0", "HC1" (or "stata", the equivalent),
 #'  "HC2" (default), "HC3", or
-#' "classical". If `clusters` is specified the options are "CR0", "CR2" (default), or "stata". Can also specify "none", which may speed up estimation of the coefficients.
+#' "classical". If \code{clusters} is specified the options are "CR0", "CR2" (default), or "stata". Can also specify "none", which may speed up estimation of the coefficients.
 #' @param ci logical. Whether to compute and return p-values and confidence
 #' intervals, TRUE by default.
 #' @param alpha The significance level, 0.05 by default.
@@ -119,7 +119,7 @@
 #'
 #' Bell, Robert M, and Daniel F McCaffrey. 2002. "Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples." Survey Methodology 28 (2): 169-82.
 #'
-#' Gaure, Simon. 2013. "OLS with multiple high dimensional category variables." Computational Statistics \& Data Analysis 66: 8-1. \url{http://dx.doi.org/10.1016/j.csda.2013.03.024}
+#' Gaure, Simon. 2013. "OLS with multiple high dimensional category variables." Computational Statistics \& Data Analysis 66: 8-1. \url{https://doi.org/10.1016/j.csda.2013.03.024}
 #'
 #' Halperin, I. 1962. "The product of projection operators." Acta Scientiarum Mathematicarum (Szeged) 23(1-2): 96-99.
 #'

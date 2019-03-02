@@ -1,3 +1,10 @@
+# estimatr 0.16.0
+
+* Add `diagnostics` to `iv_robust()`
+* Add `glance()` methods for all estimators
+* Add `lh_robust()` for easy interface to `car::linearHypothesis()`
+* Fixed minor bug with a formula such as `is.na(var)` in the `covariates` formula in `lm_lin()` (issue #283)
+
 # estimatr 0.14.0
 
 * Removes `broom` hack for `tidy` method and instead relies on importing `generics`
