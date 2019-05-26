@@ -1,3 +1,9 @@
+# estimatr 0.18.0
+
+* Fixed bug where collinear covariates caused fixed effects estimator to crash  (issue #294)
+* Added `glance.lh_robust()` and fixed some issues with printing and summarizing `lh_robust()` objects (issues #295 and #296)
+* Fixes CRAN errors in testing with new `clubSandwich` package
+
 # estimatr 0.16.0
 
 * Add `diagnostics` to `iv_robust()`
