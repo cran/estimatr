@@ -1,3 +1,10 @@
+# estimatr 0.24.0
+
+* tidy: rename nobs, nclusters, nblocks
+* tidy: new arguments conf.int, conf.level
+* Added `update.iv_robust()`
+* Bug fix regarding fixed effects with large numbers
+
 # estimatr 0.22.0 
 
 * Bug fixes

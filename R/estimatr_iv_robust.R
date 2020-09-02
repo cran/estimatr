@@ -101,7 +101,7 @@
 #'   \item{alpha}{the significance level specified by the user}
 #'   \item{se_type}{the standard error type specified by the user}
 #'   \item{res_var}{the residual variance}
-#'   \item{N}{the number of observations used}
+#'   \item{nobs}{the number of observations used}
 #'   \item{k}{the number of columns in the design matrix (includes linearly dependent columns!)}
 #'   \item{rank}{the rank of the fitted model}
 #'   \item{vcov}{the fitted variance covariance matrix}
@@ -243,7 +243,7 @@ iv_robust <- function(formula,
   return_list <- lm_return(
     second_stage,
     model_data = model_data,
-    formula = formula
+    formula = model_data$formula
   )
 
   se_type <- return_list[["se_type"]]
@@ -312,6 +312,7 @@ iv_robust <- function(formula,
   return_list[["call"]] <- match.call()
 
   return_list[["terms_regressors"]] <- model_data[["terms_regressors"]]
+  return_list[["formula"]] <- formula(formula)
   class(return_list) <- "iv_robust"
 
   return(return_list)
@@ -320,8 +321,8 @@ iv_robust <- function(formula,
 # IV diagnostic test functions
 # helper to get denominator degress of freedom
 get_dendf <- function(lm_fit) {
-  if (is.numeric(lm_fit[["N_clusters"]])) {
-    lm_fit[["N_clusters"]] - 1
+  if (is.numeric(lm_fit[["nclusters"]])) {
+    lm_fit[["nclusters"]] - 1
   } else {
     lm_fit[["df.residual"]]
   }
@@ -470,7 +471,7 @@ sargan_chisq <- function(model_data, ss_residuals) {
     return_vcov = FALSE
   )
 
-  lmr[["r.squared"]] * lmr[["N"]]
+  lmr[["r.squared"]] * lmr[["nobs"]]
 }
 
 # wooldridge score test (robust SEs)

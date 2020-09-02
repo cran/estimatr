@@ -105,7 +105,7 @@ least the following components:
   \item{conf.high}{the upper bound of the \code{1 - alpha} percent confidence interval}
   \item{term}{a character vector of coefficient names}
   \item{alpha}{the significance level specified by the user}
-  \item{N}{the number of observations used}
+  \item{nobs}{the number of observations used}
   \item{outcome}{the name of the outcome variable}
   \item{condition_pr_mat}{the condition probability matrix if \code{return_condition_pr_mat} is TRUE}
 }
@@ -254,7 +254,7 @@ horvitz_thompson(y ~ z, data = dat, condition_pr_mat = arb_pr_mat)
 
 }
 \references{
-Aronow, Peter M, and Joel A Middleton. 2013. "A Class of Unbiased Estimators of the Average Treatment Effect in Randomized Experiments." Journal of Causal Inference 1 (1): 135-54. \url{https://doi.org/10.1515/jci-2012-0009}.
+Aronow, Peter M, and Joel A Middleton. 2013. "A Class of Unbiased Estimators of the Average Treatment Effect in Randomized Experiments." Journal of Causal Inference 1 (1): 135-54. \url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.712.5830&rep=rep1&type=pdf}.
 
 Aronow, Peter M, and Cyrus Samii. 2017. "Estimating Average Causal Effects Under Interference Between Units." Annals of Applied Statistics, forthcoming. \url{https://arxiv.org/abs/1305.6156v3}.
 

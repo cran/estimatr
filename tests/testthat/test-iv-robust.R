@@ -226,6 +226,9 @@ test_that("iv_robust matches AER + ivpack", {
 })
 
 test_that("iv_robust matches AER + clubSandwich", {
+  skip_if_not_installed("AER")
+  skip_if_not_installed("clubSandwich")
+  skip_on_cran()
 
   # ClubSandwich IV tests
   for (se_type in cr_se_types) {
@@ -309,6 +312,8 @@ test_that("iv_robust matches AER + clubSandwich", {
 })
 
 test_that("iv_robust different specifications work", {
+  skip_if_not_installed("AER")
+
   # More instruments than endog. regressors
   ivro <- iv_robust(mpg ~ wt | hp + cyl, data = mtcars, se_type = "HC0")
   ivo <- AER::ivreg(mpg ~ wt | hp + cyl, data = mtcars)
@@ -340,6 +345,8 @@ test_that("iv_robust different specifications work", {
 })
 
 test_that("S3 methods", {
+  skip_if_not_installed("AER")
+
 
   ivo <- AER::ivreg(mpg ~ hp + cyl | wt + gear, data = mtcars)
   ivro <- iv_robust(mpg ~ hp + cyl | wt + gear, data = mtcars, se_type = "classical")
@@ -403,7 +410,7 @@ test_that("S3 methods", {
 
   expect_equal(
     colnames(glance(ivro)),
-    c("r.squared", "adj.r.squared", "df.residual", "N", "se_type",
+    c("r.squared", "adj.r.squared", "df.residual", "nobs", "se_type",
       "statistic", "p.value", "statistic.weakinst", "p.value.weakinst",
       "statistic.endogeneity", "p.value.endogeneity", "statistic.overid",
       "p.value.overid")

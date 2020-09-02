@@ -35,7 +35,7 @@ and \eqn{e[i]} is the ith residual.}
 \item{statistic}{the value of the F-statistic}
 \item{p.value}{p-value from the F test}
 \item{df.residual}{residual degrees of freedom}
-\item{N}{the number of observations used}
+\item{nobs}{the number of observations used}
 
 For \code{glance.lh_robust}, we glance the \code{lm_robust} component only. You can access the linear hypotheses as a data.frame directy from the \code{lh} component of the \code{lh_robust} object
 
@@ -57,14 +57,14 @@ For \code{glance.iv_robust}, a data.frame with columns:
 For \code{glance.difference_in_means}, a data.frame with columns:
 \item{design}{the design used, and therefore the estimator used}
 \item{df}{the degrees of freedom}
-\item{N}{the number of observations used}
-\item{N_blocks}{the number of blocks, if used}
-\item{N_clusters}{the number of clusters, if used}
+\item{nobs}{the number of observations used}
+\item{nblocks}{the number of blocks, if used}
+\item{nclusters}{the number of clusters, if used}
 \item{condition2}{the second, "treatment", condition}
 \item{condition1}{the first, "control", condition}
 
 For \code{glance.horvitz_thompson}, a data.frame with columns:
-\item{N}{the number of observations used}
+\item{nobs}{the number of observations used}
 \item{se_type}{the type of standard error estimator used}
 \item{condition2}{the second, "treatment", condition}
 \item{condition1}{the first, "control", condition}
@@ -73,6 +73,6 @@ For \code{glance.horvitz_thompson}, a data.frame with columns:
 Glance at an estimatr object
 }
 \seealso{
-\code{\link[generics:glance]{generics::glance()}}, \code{\link[estimatr:lm_robust]{estimatr::lm_robust()}}, \code{\link[estimatr:lm_lin]{estimatr::lm_lin()}}, \code{\link[estimatr:iv_robust]{estimatr::iv_robust()}}, \code{\link[estimatr:difference_in_means]{estimatr::difference_in_means()}}, \code{\link[estimatr:horvitz_thompson]{estimatr::horvitz_thompson()}}
+\code{\link[generics:glance]{generics::glance()}}, \code{\link[=lm_robust]{lm_robust()}}, \code{\link[=lm_lin]{lm_lin()}}, \code{\link[=iv_robust]{iv_robust()}}, \code{\link[=difference_in_means]{difference_in_means()}}, \code{\link[=horvitz_thompson]{horvitz_thompson()}}
 }
 \concept{estimatr glancers}
