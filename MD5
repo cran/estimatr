@@ -1,7 +1,7 @@
-abb616b566a2e3c21f370effbc1bb19f *DESCRIPTION
+0b77f0de115769b99b090ec1091fc348 *DESCRIPTION
 987155d343d711d5e9d9d382312efc4e *LICENSE
 319cbbd36a077c940ed89d610644bfbb *NAMESPACE
-4967802a9e4562ca23410e0dcf813184 *NEWS.md
+9baeae5429d54cb774d35fa5c841f724 *NEWS.md
 e794789da71c6eaf8250c94aacc90b34 *R/RcppExports.R
 2263f25777257b57277e4946a005b5e0 *R/S3_confint.R
 362a180401e1a9abe458a2b1161c940e *R/S3_emmeans.R
@@ -85,7 +85,7 @@ da369c3fa07476e1d4a2332ccd8d3a8e *tests/testthat/test-lm-robust-helper.R
 04adaf2d88783712ecdb972cc13e69f1 *tests/testthat/test-lm-robust.R
 70c6ca606f949399d1960fecc943f448 *tests/testthat/test-lm-robust_emmeans.R
 915e1f212da091ced86b3617d01c2180 *tests/testthat/test-lm-robust_margins.R
-f80954e57704ac00fbb0d74d178ba300 *tests/testthat/test-modelsummary.R
+c3b9b938ccdc95ca6b43743e8966df53 *tests/testthat/test-modelsummary.R
 3837983c42ad308f413a160ec9a4a76b *tests/testthat/test-na-omit-details.R
 84bcbf1e97c21590d6c7bc65a26f6d44 *tests/testthat/test-replicate-HT-middleton.R
 98b4614754d05c467e98c0b12011e8d6 *tests/testthat/test-replicate-lin2013.R
