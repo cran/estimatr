@@ -1,7 +1,7 @@
-0b77f0de115769b99b090ec1091fc348 *DESCRIPTION
+5555e6d40180abbcfa59935aa74a49d6 *DESCRIPTION
 987155d343d711d5e9d9d382312efc4e *LICENSE
 319cbbd36a077c940ed89d610644bfbb *NAMESPACE
-9baeae5429d54cb774d35fa5c841f724 *NEWS.md
+a05cea349e1285f2672964034b05161c *NEWS.md
 e794789da71c6eaf8250c94aacc90b34 *R/RcppExports.R
 2263f25777257b57277e4946a005b5e0 *R/S3_confint.R
 362a180401e1a9abe458a2b1161c940e *R/S3_emmeans.R
@@ -94,4 +94,3 @@ ca7c845d0647b1dc4a6533a48896713f *tests/testthat/test-s3-methods.R
 069930d497740d73d9bdab0edf860d10 *tests/testthat/test-sig-testing.R
 e5cbaa1b984afdd34fb9224e9ed0e6f9 *tests/testthat/test-starprep.R
 a364dd91c0c60ea3cc3fb91034ae60b2 *tests/testthat/test-stata-output.R
-d774e6582e023b3af6ad3a0ba6e0d17f *tests/testthat/test-zzz.R
