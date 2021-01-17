@@ -1,7 +1,7 @@
-00f9cf96f894d5294483596158304a59 *DESCRIPTION
+785ba1c172db031a6c29a9fcb6244cee *DESCRIPTION
 987155d343d711d5e9d9d382312efc4e *LICENSE
 e3df19b8adcb6707612eb359a9faa97e *NAMESPACE
-9ae00fc766bf9c5f70ac8f13b83e24e3 *NEWS.md
+26bdd7db6be59b9d4ddfd10bc6486bb8 *NEWS.md
 e794789da71c6eaf8250c94aacc90b34 *R/RcppExports.R
 2263f25777257b57277e4946a005b5e0 *R/S3_confint.R
 362a180401e1a9abe458a2b1161c940e *R/S3_emmeans.R
@@ -31,7 +31,7 @@ fe2c1bcbf4d4bbd54d32bde691ad492e *R/helper_parse_arguments.R
 74c2cec12979b190a90adaf5a418aefe *R/helper_return.R
 4300272a84b983b611993090b93aca4b *R/helper_starprep.R
 6e46076834fb4633ec2dd44086f07d59 *R/zzz.R
-42a1b510ce0db8f071b24126d368b42a *build/partial.rdb
+8667526344b0dcf1b29748066a266425 *build/partial.rdb
 07161ed396beafe204615ad6fd046966 *data/alo_star_men.rda
 319e1d78fa76f18ddface7e5e314229f *man/alo_star_men.Rd
 bd4f4763e5074aeb64e6c93218ded93d *man/commarobust.Rd
@@ -76,12 +76,12 @@ f6c2a1c3f2f7bf025a8553a26967ff1f *tests/testthat/stata-iv-ests.txt
 f932eb2be12806e4809f13db4bc0eed0 *tests/testthat/test-condition1-condition2.R
 7fbd452f4bcf03c43069de04e5a12169 *tests/testthat/test-difference-in-means.R
 8be0c33f1821eafabe5045a39ddc5116 *tests/testthat/test-horvitz-thompson.R
-b42b86c905569cfcec812495e7e283b7 *tests/testthat/test-iv-robust-fes.R
+1296bc7b52d4e3deb57c840fd62c79b2 *tests/testthat/test-iv-robust-fes.R
 7a55dd2706a066f505548b0770b0eae8 *tests/testthat/test-iv-robust.R
 84a8f22d5040c1360a8ce49c88ed6cb9 *tests/testthat/test-lh-robust.R
 3cfb0addd0f64348534c3dee435ed3cf *tests/testthat/test-lm-cluster.R
 30630c3e32bad5d24f26edf9e942d636 *tests/testthat/test-lm-lin.R
-7a59ff4e52e26b5a03259641b497e509 *tests/testthat/test-lm-robust-fes.R
+a0ae244e84840b72239982d400dcae9f *tests/testthat/test-lm-robust-fes.R
 da369c3fa07476e1d4a2332ccd8d3a8e *tests/testthat/test-lm-robust-helper.R
 f577f0b2af16d5d0b179070da617f6ca *tests/testthat/test-lm-robust.R
 16c66af13ebc59f94b07639e681daec2 *tests/testthat/test-lm-robust_emmeans.R
