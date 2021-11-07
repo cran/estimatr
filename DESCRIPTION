@@ -1,7 +1,7 @@
 Package: estimatr
 Type: Package
 Title: Fast Estimators for Design-Based Inference
-Version: 0.30.2
+Version: 0.30.4
 Authors@R: c(person("Graeme", "Blair", email = "graeme.blair@ucla.edu", role = c("aut", "cre")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
              person("Alexander", "Coppock", email = "alex.coppock@yale.edu", role = c("aut")),
@@ -20,7 +20,7 @@ Imports: Formula, generics, methods, Rcpp (>= 0.12.16), rlang (>=
         0.2.0)
 LinkingTo: Rcpp, RcppEigen
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 LazyData: true
 Suggests: fabricatr (>= 0.10.0), randomizr (>= 0.20.0), AER,
         clubSandwich, emmeans (>= 1.4), estimability, ivpack, margins,
@@ -28,7 +28,7 @@ Suggests: fabricatr (>= 0.10.0), randomizr (>= 0.20.0), AER,
         testthat, car
 Enhances: texreg
 NeedsCompilation: yes
-Packaged: 2021-01-16 01:11:05 UTC; ac2595
+Packaged: 2021-11-07 09:36:04 UTC; graeme
 Author: Graeme Blair [aut, cre],
   Jasper Cooper [aut],
   Alexander Coppock [aut],
@@ -39,4 +39,4 @@ Author: Graeme Blair [aut, cre],
   Russell Lenth [ctb]
 Maintainer: Graeme Blair <graeme.blair@ucla.edu>
 Repository: CRAN
-Date/Publication: 2021-01-17 05:50:05 UTC
+Date/Publication: 2021-11-07 15:50:10 UTC

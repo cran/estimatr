@@ -193,6 +193,36 @@ test_that("tidy, glance, summary, and print work", {
   slho <- summary(lho)
   glho <- glance(lho)
 
+  ## iv_robust 1st-stage stats.
+  ivro <- iv_robust(y ~ x | z, data = dat, se_type = "classical", diagnostics = T)
+  expect_equivalent(
+    as.numeric(glance(ivro)[c("statistic.weakinst", "p.value.weakinst")]),
+    summary(ivro)$diagnostic_first_stage_fstatistic[c(1, 4)]
+  )
+  expect_equivalent(
+    as.numeric(glance(ivro)[c("statistic.endogeneity", "p.value.endogeneity")]),
+    summary(ivro)$diagnostic_endogeneity_test[c(1, 4)]
+  )
+  expect_equivalent(
+    as.logical(is.na(glance(ivro)[c("statistic.overid", "p.value.overid")])),
+    c(T, T)
+  )
+  ## iv-robust over-identification test
+  ivro_oid <- iv_robust(y ~ x | z + p, data = dat, se_type = "classical", diagnostics = T)
+  expect_equivalent(
+    as.numeric(glance(ivro_oid)[c("statistic.weakinst", "p.value.weakinst")]),
+    summary(ivro_oid)$diagnostic_first_stage_fstatistic[c(1, 4)]
+  )
+  expect_equivalent(
+    as.numeric(glance(ivro_oid)[c("statistic.endogeneity", "p.value.endogeneity")]),
+    summary(ivro_oid)$diagnostic_endogeneity_test[c(1, 4)]
+  )
+  expect_equivalent(
+    as.numeric(glance(ivro_oid)[c("statistic.overid", "p.value.overid")]),
+    summary(ivro_oid)$diagnostic_overid_test[c(1, 3)]
+  )
+
+
   # tidy adds rows for each LH
   expect_equal(
     tlho$term,
@@ -1042,3 +1072,54 @@ test_that("update works", {
   )
 
 })
+
+test_that("setting different alpha in lm_robust call leads to different CIs in tidy", {
+
+  set.seed(15)
+  library(fabricatr)
+  dat <- fabricate(
+    N = 40,
+    y = rpois(N, lambda = 4),
+    x = rnorm(N),
+    z = rbinom(N, 1, prob = 0.4)
+  )
+
+  # Default variance estimator is HC2 robust standard errors
+  lmro05 <- lm_robust(y ~ x + z, data = dat)
+  td1 <- tidy(lmro05)
+
+  lmro01 <- lm_robust(y ~ x + z, alpha = 0.01, data = dat)
+  td2 <- tidy(lmro01)
+
+  td3 <- tidy(lmro01, conf.int = TRUE, conf.level = 0.95)
+
+  expect_false(identical(round(td1$conf.low, 2), round(td2$conf.low, 2)))
+  expect_true(identical(round(td1$conf.low, 2), round(td3$conf.low, 2)))
+
+})
+
+test_that("conf int for lh_robust works", {
+
+  set.seed(15)
+  library(fabricatr)
+  dat <- fabricate(
+    N = 40,
+    y = rpois(N, lambda = 4),
+    x = rnorm(N),
+    z = rbinom(N, 1, prob = 0.4)
+  )
+
+  # Default variance estimator is HC2 robust standard errors
+  lhro05 <- lh_robust(y ~ x + z, linear_hypothesis = "z - 0.05 = 0", data = dat)
+  td1 <- tidy(lhro05)
+
+  lhro01 <- lh_robust(y ~ x + z, linear_hypothesis = "z - 0.05 = 0", alpha = 0.01, data = dat)
+  td2 <- tidy(lhro01)
+
+  td3 <- tidy(lhro05, conf.int = TRUE, conf.level = 0.95)
+
+  expect_false(identical(round(td1$conf.low, 2), round(td2$conf.low, 2)))
+  expect_true(identical(round(td1$conf.low, 2), round(td3$conf.low, 2)))
+
+  })
+
