@@ -1,7 +1,7 @@
 Package: estimatr
 Type: Package
 Title: Fast Estimators for Design-Based Inference
-Version: 0.30.4
+Version: 0.30.6
 Authors@R: c(person("Graeme", "Blair", email = "graeme.blair@ucla.edu", role = c("aut", "cre")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
              person("Alexander", "Coppock", email = "alex.coppock@yale.edu", role = c("aut")),
@@ -28,7 +28,7 @@ Suggests: fabricatr (>= 0.10.0), randomizr (>= 0.20.0), AER,
         testthat, car
 Enhances: texreg
 NeedsCompilation: yes
-Packaged: 2021-11-07 09:36:04 UTC; graeme
+Packaged: 2022-01-27 21:30:35 UTC; ac2595
 Author: Graeme Blair [aut, cre],
   Jasper Cooper [aut],
   Alexander Coppock [aut],
@@ -39,4 +39,4 @@ Author: Graeme Blair [aut, cre],
   Russell Lenth [ctb]
 Maintainer: Graeme Blair <graeme.blair@ucla.edu>
 Repository: CRAN
-Date/Publication: 2021-11-07 15:50:10 UTC
+Date/Publication: 2022-01-31 08:30:02 UTC
